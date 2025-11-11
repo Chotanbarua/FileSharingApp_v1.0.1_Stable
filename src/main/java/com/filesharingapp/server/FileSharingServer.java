@@ -36,13 +36,24 @@ public class FileSharingServer {
      * Called by StepDefinitions and integration tests.
      */
 // Inside your startSharedServer() or equivalent method
+    // Inside your startSharedServer() or equivalent method
     public static int startSharedServer() {
         try {
             int port = 8080;
             Server server = new Server(port);
+
+            // --- Serve static resources (index.html etc.) ---
+            ResourceHandler resourceHandler = new ResourceHandler();
+            resourceHandler.setDirectoriesListed(false);
+            resourceHandler.setWelcomeFiles(new String[]{"index.html"});
+            resourceHandler.setResourceBase("src/main/resources/web");  // path to your web UI folder
+
+            // --- Existing API handler ---
+            FileSharingHandler apiHandler = new FileSharingHandler();
+
+            // ✅ Create the context *before* adding prompt servlet
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
-            server.setHandler(context);
 
             // ✅ Add this new /prompt endpoint here
             context.addServlet(new ServletHolder(new HttpServlet() {
@@ -57,23 +68,15 @@ public class FileSharingServer {
                 }
             }), "/prompt");
 
-
-            // --- Serve static resources (index.html etc.) ---
-            ResourceHandler resourceHandler = new ResourceHandler();
-            resourceHandler.setDirectoriesListed(false);
-            resourceHandler.setWelcomeFiles(new String[]{"index.html"});
-            resourceHandler.setResourceBase("src/main/resources/web");  // path to your web UI folder
-
-            // --- Existing API handler ---
-            FileSharingHandler apiHandler = new FileSharingHandler();
-
-            // Combine both into a handler list
+            // ✅ Combine everything in the correct order
             HandlerList handlers = new HandlerList();
             handlers.addHandler(resourceHandler);
             handlers.addHandler(apiHandler);
+            handlers.addHandler(context); // <-- move context LAST so /prompt works
 
             server.setHandler(handlers);
             server.start();
+
             LoggerUtil.info("[FileSharingServer] ✅ Running at http://localhost:" + port);
             return port;
         } catch (Exception e) {
@@ -81,6 +84,7 @@ public class FileSharingServer {
             throw new RuntimeException("Failed to start Jetty server", e);
         }
     }
+
 
     public FileSharingServer(int port){
         try{
