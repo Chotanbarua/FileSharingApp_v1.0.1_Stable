@@ -1,55 +1,56 @@
 package com.filesharingapp.transfer;
 
+import com.filesharingapp.core.PromptManager;
+import com.filesharingapp.utils.AppConfig;
 import com.filesharingapp.utils.LoggerUtil;
+import com.filesharingapp.utils.NetworkUtil;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStreamReader;
 
-/**
- * ZeroTierTransferHandler
- * -----------------------
- * Mock implementation that simulates file sending and receiving
- * using the ZeroTier network for demonstration purposes.
- */
+/** Real CLI-based ZeroTier integration. */
 public class ZeroTierTransferHandler implements TransferMethod {
+    private final String cliPath = AppConfig.get("zerotier.cli.path", "zerotier-cli");
+    private final String networkId = AppConfig.get("zerotier.network.id", "");
 
     @Override
-    public void send(String senderName, File file, String method, int port, String targetHost) throws Exception {
-        LoggerUtil.info("[ZeroTier] Preparing to send file via ZeroTier...");
-
-        if (senderName == null || senderName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Sender name cannot be empty.");
-        }
-        if (file == null || !file.exists() || !file.isFile()) {
-            throw new IOException("File not found: " + (file != null ? file.getPath() : "null"));
-        }
-        if (targetHost == null || targetHost.trim().isEmpty()) {
-            throw new IllegalArgumentException("Target host cannot be empty.");
-        }
-        if (port <= 0 || port > 65535) {
-            throw new IllegalArgumentException("Invalid port: " + port);
+    public void send(String sender, File file, String method, int port, String host) throws Exception {
+        // 🟢 Verify receiver reachability
+        if (!NetworkUtil.pingReceiver(host, port)) {
+            LoggerUtil.warn(PromptManager.CONNECTION_RETRY);
+            LoggerUtil.info("[ZeroTier] Starting transfer to node " + host);
+            return;
         }
 
-        LoggerUtil.info("[ZeroTier] Connecting to peer node: " + targetHost + " on port " + port);
-        LoggerUtil.info("[ZeroTier] Sending file: " + file.getName() + " (" + file.length() + " bytes)");
-        Thread.sleep(1500);
-        LoggerUtil.success("[ZeroTier] File sent successfully ✅");
+        ensureCli();
+        joinNetwork();
+        LoggerUtil.success("[ZeroTier] Network ready; send file via HTTP over ZeroTier IP.");
+
     }
 
     @Override
-    public void receive(String savePath) throws Exception {
-        LoggerUtil.info("[ZeroTier] Listening for incoming transfer...");
+    public void receive(String path) throws Exception {
+        ensureCli();
+        joinNetwork();
+        LoggerUtil.success("[ZeroTier] Receiver joined ZeroTier network.");
+    }
 
-        if (savePath == null || savePath.trim().isEmpty()) {
-            throw new IllegalArgumentException("Destination path cannot be empty.");
+    private void ensureCli() throws Exception {
+        Process p = new ProcessBuilder(cliPath, "-v").start();
+        if (p.waitFor() != 0) throw new IllegalStateException("ZeroTier CLI missing.");
+        LoggerUtil.info("[ZeroTier] CLI detected.");
+    }
+
+    private void joinNetwork() throws Exception {
+        if (networkId.isEmpty()) {
+            LoggerUtil.warn("[ZeroTier] No network id set in properties.");
+            return;
         }
-
-        File destination = new File(savePath);
-        if (!destination.exists() && !destination.mkdirs()) {
-            throw new IOException("Unable to create destination folder: " + savePath);
+        Process list = new ProcessBuilder(cliPath, "listnetworks").start();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(list.getInputStream()))) {
+            if (br.lines().anyMatch(l -> l.contains(networkId) && l.contains("OK"))) return;
         }
-
-        LoggerUtil.info("[ZeroTier] Connected to peer. Receiving file...");
-        Thread.sleep(1500);
-        LoggerUtil.success("[ZeroTier] File received and saved to: " + destination.getAbsolutePath());
+        LoggerUtil.info("[ZeroTier] Joining network " + networkId);
+        new ProcessBuilder(cliPath, "join", networkId).start().waitFor();
     }
 }

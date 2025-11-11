@@ -66,4 +66,27 @@ public final class NetworkUtil {
             return false;
         }
     }
+
+    public static boolean pingReceiver(String targetHost, int port) {
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress(targetHost, port), 2000);
+            LoggerUtil.info("✅ Receiver reachable at " + targetHost + ":" + port);
+            return true;
+        } catch (Exception e) {
+            LoggerUtil.warn("❌ Receiver not reachable at " + targetHost + ":" + port);
+            return false;
+        }
+    }
+
+    public static void broadcastModeToReceiver(String method, String host, int port) {
+        try {
+            java.net.URL url = new java.net.URL("http://" + host + ":" + port + "/handshake?method=" + method);
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(2000);
+            conn.getResponseCode();
+            LoggerUtil.info("🔄 Notified receiver of transport mode: " + method);
+        } catch (Exception e) {
+            LoggerUtil.warn("⚠️ Could not notify receiver about transport mode.");
+        }
+    }
 }

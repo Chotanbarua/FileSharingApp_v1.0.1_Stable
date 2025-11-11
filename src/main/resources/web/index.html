@@ -2,157 +2,126 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>File Sharing App - Friendly Web UI</title>
+    <title>File Sharing App</title>
     <style>
-        body { font-family: Arial, sans-serif; background:#fafafa; padding:24px; }
-        h1 { color:#005bbb; }
-        label { display:block; margin-top:10px; font-weight:bold; }
-        input, select { width:360px; padding:8px; margin-top:4px; }
-        button { padding:10px 24px; margin-top:16px; cursor:pointer; }
-        #progressContainer { display:none; margin-top:16px; width:360px; background:#eee; }
-        #progressBar { width:0; height:18px; background:#28a745; transition:width 0.2s; }
-        #status { margin-top:10px; font-weight:bold; }
-        small { color:#666; }
+        body { font-family: Arial, sans-serif; background: #f5f7fb; margin: 0; }
+        .wrapper { max-width: 800px; margin: 20px auto; background: #fff; padding: 20px;
+          border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h1 { margin-top: 0; color: #1f6feb; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; margin-top: 4px; border-radius: 5px; border: 1px solid #ccc; }
+        button { margin-top: 15px; padding: 10px 16px; background: #1f6feb; color: #fff;
+          border: none; border-radius: 6px; cursor: pointer; font-size: 15px; }
+        button:hover { background: #144a9b; }
+        .small { font-size: 12px; color: #666; }
+        .ip-box { padding: 8px; background: #f0f4ff; border-radius: 6px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-<h1>📦 File Sharing App - Friendly Web UI</h1>
-<p id="ipLine"></p>
+<div class="wrapper">
+    <h1 tabindex="0">📁 File Sharing App - Web UI</h1>
 
-<form id="transferForm">
-    <label>Your Name (so I can cheer for you 😄):</label>
-    <input id="name" type="text" placeholder="Example: SyedTheSender">
+    <div class="ip-box">
+        <div>Your IP (share this with your partner): <span id="userIP">localhost</span></div>
+        <div class="small">If you're on same Wi-Fi, use this. For remote, use ZeroTier.</div>
+    </div>
 
-    <label>Who are you today?</label>
+    <label for="name">Your Name</label>
+    <input id="name" type="text" placeholder="Enter your name" />
+
+    <label for="role">Role</label>
     <select id="role">
-        <option value="">-- Please choose --</option>
         <option value="Sender">Sender</option>
         <option value="Receiver">Receiver</option>
     </select>
 
-    <label>How to send the magic?</label>
+    <label for="method">Transfer Method</label>
     <select id="method">
-        <option value="HTTP">HTTP (plain, fast, LAN friendly)</option>
-        <option value="ZeroTier">ZeroTier (secure overlay - requires client)</option>
-        <option value="S3">AWS S3 (needs IAM role)</option>
+        <option value="HTTP">HTTP (Simple / LAN)</option>
+        <option value="ZeroTier">ZeroTier (Secure P2P)</option>
+        <option value="S3">AWS S3 (Cloud)</option>
     </select>
-    <small>
-        For this build, the HTML form sends real data using HTTP.
-        ZeroTier/S3 are handled by backend Java handlers.
-    </small>
 
-    <label>ZIP file(s) to send (Sender only):</label>
-    <input id="files" type="file" multiple>
-    <small>Example: your_photos.zip (Receiver does not need to pick files).</small>
+    <label for="file">File (Sender only)</label>
+    <input id="file" type="file" />
 
-    <label>Target Host / Receiver IP / S3 Bucket:</label>
-    <input id="target" type="text" placeholder="HTTP/ZeroTier: 192.168.1.10 | S3: my-bucket">
+    <label for="target">Target IP / URL / Bucket</label>
+    <input id="target" type="text" placeholder="192.168.x.x or bucket-name" />
 
-    <label>Port (HTTP / ZeroTier):</label>
-    <input id="port" type="number" value="8080">
+    <label for="port">Port</label>
+    <input id="port" type="text" value="8080" />
 
-    <button type="submit">🚀 Start Transfer</button>
-</form>
-
-<div id="progressContainer">
-    <div id="progressBar"></div>
+    <button id="startBtn">🚀 Start</button>
+    <div id="msg" class="small" aria-live="polite"></div>
 </div>
-<div id="status"></div>
 
 <script>
-    const ipLine = document.getElementById("ipLine");
-    const form = document.getElementById("transferForm");
-    const statusBox = document.getElementById("status");
-    const progressContainer = document.getElementById("progressContainer");
-    const progressBar = document.getElementById("progressBar");
-    const nameInput = document.getElementById("name");
-    const roleInput = document.getElementById("role");
-    const methodInput = document.getElementById("method");
-    const filesInput = document.getElementById("files");
-    const portInput = document.getElementById("port");
-
-    // Show basic IP / port info at top in friendly tone
-    ipLine.textContent =
-      `Your IP (share this with your partner): ${location.hostname} | Suggested port: ${portInput.value}`;
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      statusBox.textContent = "";
-      progressBar.style.width = "0%";
-      progressContainer.style.display = "none";
-
-      const name = nameInput.value.trim();
-      const role = roleInput.value;
-      const method = methodInput.value;
-      const port = portInput.value.trim();
-      const files = filesInput.files;
-
-      // Friendly validations
-      if (!name) {
-        statusBox.textContent = "I need your name so I can cheer for you 🥹";
-        return;
+    // Detect local IP (best effort)
+    (function () {
+      const ipField = document.getElementById('ipField');
+      try {
+        const pc = new RTCPeerConnection({iceServers: []});
+        pc.createDataChannel("");
+        pc.createOffer().then(o => pc.setLocalDescription(o));
+        pc.onicecandidate = e => {
+          if (!e || !e.candidate) return;
+          const m = e.candidate.candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3})/);
+          if (m) {
+            ipField.textContent = m[1];
+            pc.close();
+          }
+        };
+        setTimeout(() => {
+          if (ipField.textContent === "Detecting...") {
+            ipField.textContent = location.hostname || "localhost";
+          }
+        }, 2000);
+      } catch (e) {
+        ipField.textContent = location.hostname || "localhost";
       }
-      if (!role) {
-        statusBox.textContent = "Tell me who you are today: Sender or Receiver? 😊";
-        return;
-      }
-      if (role === "Sender" && files.length === 0 && method === "HTTP") {
-        statusBox.textContent = "As Sender on HTTP, please choose at least one file 📁";
-        return;
-      }
+    })();
 
-      if (method !== "HTTP") {
-        statusBox.textContent =
-          "For this web form, only HTTP upload is triggered. ZeroTier & S3 are handled in Java backend.";
-        return;
-      }
+    // Simple client-side prompt hookup only
+    document.getElementById('startBtn').addEventListener('click', function() {
+  const role = document.getElementById('role').value;
+  const method = document.getElementById('method').value;
+  const name = document.getElementById('name').value.trim();
 
-      if (role !== "Sender") {
-        statusBox.textContent =
-          "For HTTP via Web UI, run this page on Receiver and use a separate Sender browser pointing here.";
-        return;
-      }
+  // Basic input validation
+  if (!name) {
+    alert('Please enter your name.');
+    return;
+  }
 
-      // Build FormData for HTTP upload
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("role", role);
-      formData.append("method", method);
+  if (!role) {
+    alert('Please select a role.');
+    return;
+  }
 
-      for (const f of files) {
-        formData.append("files", f);
-      }
+  if (!method) {
+    alert('Please select a transfer method.');
+    return;
+  }
 
-      // Show progress UI
-      progressContainer.style.display = "block";
-      statusBox.textContent = "Uploading... I’ve got this 💪";
+  // Only after validation succeeds
+  const msg = `Hi ${name} 👋 You chose ${role} using ${method}. Continue in desktop app to run full transfer.`;
+  document.getElementById('statusMsg').textContent = msg;
+});
 
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/api/send-http", true);
 
-      // Track upload progress
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percent = (event.loaded / event.total) * 100;
-          progressBar.style.width = percent.toFixed(1) + "%";
-        }
-      };
 
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          statusBox.textContent = "Transfer success ✅ " + xhr.responseText;
-        } else {
-          statusBox.textContent =
-            "Transfer failed ❌ Status " + xhr.status + " - " + xhr.responseText;
-        }
-      };
+async function detectLocalIP() {
+  try {
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    document.getElementById('userIP').textContent = data.ip;
+  } catch {
+    document.getElementById('userIP').textContent = 'localhost';
+  }
+}
+window.onload = detectLocalIP;
+</script>
 
-      xhr.onerror = () => {
-        statusBox.textContent = "Network error ❌ Please check connection and try again.";
-      };
-
-      xhr.send(formData);
-    });
 </script>
 </body>
 </html>

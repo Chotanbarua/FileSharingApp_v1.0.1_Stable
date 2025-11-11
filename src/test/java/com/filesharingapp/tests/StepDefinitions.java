@@ -8,65 +8,59 @@ import org.testng.Assert;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.ServerSocket;
 import java.net.URL;
 
 /**
  * StepDefinitions
  * ----------------
- * Simple API checks for FileSharingServer to validate endpoints
- * using Cucumber BDD + TestNG assertions.
+ * BDD-style smoke test class that verifies the embedded FileSharingServer.
+ * Checks that the server starts, responds to /health and /handshake endpoints.
+ *
+ * Compatible with Jetty 11 + Jakarta Servlet 6.
  */
 public class StepDefinitions {
 
     private int serverPort;
-    private FileSharingServer server;
 
     @Given("the file sharing server is running")
     public void the_server_is_running() throws Exception {
-        // Pick a free port for test
-        try (ServerSocket socket = new ServerSocket(0)) {
-            serverPort = socket.getLocalPort();
-        }
+        // Start the Jetty test server on default port 8080
+        serverPort = FileSharingServer.startSharedServer();
 
-        // Start server on that port in a background thread
-        server = new FileSharingServer(serverPort);
-        new Thread(() -> {
-            try {
-                server.start();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-
-        System.out.println("[Test] Server started on port: " + serverPort);
+        System.out.println("[Test] ✅ Server started on port: " + serverPort);
         Assert.assertTrue(serverPort > 0, "Server port must be valid.");
-        Thread.sleep(1500); // give it time to boot
+
+        // Give Jetty a moment to boot
+        Thread.sleep(1500);
     }
 
     @Then("the health endpoint returns OK")
     public void health_returns_ok() throws Exception {
         String body = get("http://localhost:" + serverPort + "/health");
-        Assert.assertTrue(body.contains("\"status\":\"OK\""), "Health endpoint failed.");
+        Assert.assertEquals(body.trim(), "OK", "❌ Health endpoint failed!");
+        System.out.println("[Test] 🩺 Health check OK");
     }
 
     @Then("the handshake endpoint returns READY")
     public void handshake_returns_ready() throws Exception {
-        String body = get("http://localhost:" + serverPort + "/handshake?name=TestReceiver");
-        Assert.assertTrue(body.contains("\"receiver\":\"TestReceiver\""), "Handshake endpoint failed.");
+        String body = get("http://localhost:" + serverPort + "/handshake");
+        Assert.assertTrue(body.startsWith("READY:"), "❌ Handshake endpoint failed!");
+        System.out.println("[Test] 🤝 Handshake OK: " + body);
     }
 
-    // Utility method to perform GET requests
+    // ---------------------------------------------------------------
+    // Utility: simple GET request helper for health/handshake tests
+    // ---------------------------------------------------------------
     private String get(String urlStr) throws Exception {
         HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
-        conn.setConnectTimeout(2000);
-        conn.setReadTimeout(5000);
         conn.setRequestMethod("GET");
+        conn.setConnectTimeout(2000);
+        conn.setReadTimeout(3000);
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
             StringBuilder sb = new StringBuilder();
             String line;
-            while ((line = br.readLine()) != null) {
+            while ((line = in.readLine()) != null) {
                 sb.append(line);
             }
             return sb.toString();

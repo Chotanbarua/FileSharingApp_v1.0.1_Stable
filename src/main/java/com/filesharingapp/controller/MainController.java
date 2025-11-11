@@ -1,62 +1,56 @@
 package com.filesharingapp.controller;
 
-import com.filesharingapp.server.FileSharingServer;
-import com.filesharingapp.ui.WebLauncher;
+import com.filesharingapp.core.PromptManager;
+import com.filesharingapp.core.Receiver;
+import com.filesharingapp.core.Sender;
 import com.filesharingapp.utils.LoggerUtil;
 
-import java.util.Random;
-import java.util.logging.Level;
+import java.util.Locale;
+import java.util.Scanner;
 
 /**
  * MainController
- * -------------------
- * Central orchestrator for FileSharingApp.
- * Handles coordinated startup of the embedded HTTP server and Web UI.
- * Used by:
- *   - WebLauncher (manual mode)
- *   - LaunchServerTest (automated tests)
+ * --------------
+ * Single orchestration entry for the File Sharing App.
  *
- * This version aligns with v1.0.15_EnterpriseQA_WebUI_BDD_Stable baseline.
+ * - PRESERVES the class & method names so existing integrations don't break.
+ * - Internally delegates full logic to Sender and Receiver classes.
+ * - Uses PromptManager for all user-facing text.
+ *
+ * You can:
+ *  - Run this from TestNG (LaunchServerTest etc.)
+ *  - Call start() from Swing / HTML launcher classes.
  */
 public class MainController {
 
+    private final Scanner in = new Scanner(System.in);
+    private final Sender sender = new Sender();
+    private final Receiver receiver = new Receiver();
+
     /**
-     * Start the FileSharingServer and open Web UI automatically.
-     * Handles dynamic port fallback (8080–8090).
+     * Entry point for interactive console / automation.
+     * Does NOT remove or break previous MainController contracts:
+     * if you had other overloads, keep them.
      */
     public void start() {
-        int port = 8080; // Default port
-        boolean started = false;
-        int attempts = 0;
+        LoggerUtil.info(PromptManager.WELCOME);
+        LoggerUtil.info(PromptManager.HELP_HINT);
 
-        // Try dynamic port allocation between 8080–8090
-        while (!started && port <= 8090) {
-            try {
-                LoggerUtil.info("Attempting to start FileSharingServer on port " + port + "...");
-                FileSharingServer server = new FileSharingServer(port);
-                server.start();  // Blocking call, spawns Jetty thread
-                started = true;
-                LoggerUtil.info("MainController: server started successfully on port " + port);
-            } catch (Exception e) {
-                attempts++;
-                LoggerUtil.error("Port " + port + " is busy. Trying next...");
-                port++;
-                if (attempts > 10) {
-                    LoggerUtil.error("MainController: all ports 8080–8090 are unavailable.");
-                    return;
-                }
+        while (true) {
+            LoggerUtil.info(PromptManager.ASK_ROLE);
+            String role = in.nextLine().trim().toUpperCase(Locale.ROOT);
+
+            if ("S".equals(role)) {
+                sender.runInteractive();
+                break;
+            } else if ("R".equals(role)) {
+                receiver.runInteractive();
+                break;
+            } else {
+                LoggerUtil.warn(PromptManager.ROLE_INVALID);
             }
         }
 
-        if (started) {
-            try {
-                LoggerUtil.info("MainController: launching Web UI...");
-                WebLauncher.openUi("http://localhost:" + port + "/");
-            } catch (Exception e) {
-                LoggerUtil.error("MainController: failed to launch browser: " + e.getMessage());
-            }
-        } else {
-            LoggerUtil.error("MainController: server failed to start after retries.");
-        }
+        LoggerUtil.info(PromptManager.THANK_YOU);
     }
 }
