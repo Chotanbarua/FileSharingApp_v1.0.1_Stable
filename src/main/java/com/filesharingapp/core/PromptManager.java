@@ -290,4 +290,16 @@ public final class PromptManager {
     public static final String MODE_NOTIFICATION = "Sharing active transport method with receiver.";
     public static final String MODE_CONFIRMATION = "Receiver confirmed mode synchronization.";
 
+    // ===== Add near other Receiver prompts =====
+    public static final String ASK_OVERWRITE =
+            "A file with the same name already exists. Overwrite? (Y/N)";
+
+    // Overload used by Receiver when a partial file exists.
+// Leave your existing ASK_RESUME_INACTIVE (no-arg) if you have it;
+// this is an overload that formats the message with the file name.
+    public static String ASK_RESUME_INACTIVE(java.io.File partialFile) {
+        return "We found a partial download: " + partialFile.getName()
+                + ". Resume from where it left off? (Y/N)";
+    }
+
 }

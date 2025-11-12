@@ -1,5 +1,6 @@
 package com.filesharingapp.utils;
 
+import com.filesharingapp.core.PromptManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,32 +12,29 @@ import java.net.*;
  * Small helpers for:
  * - finding local IP,
  * - checking if a port is free,
- * - checking if a host:port is reachable.
+ * - checking if a host:port is reachable,
+ * - broadcasting sender handshake info,
+ * - verifying ZeroTier network status,
+ * - pushing live /prompt updates for browser UI.
  */
 public final class NetworkUtil {
 
-    private NetworkUtil() {
-    }
+    private NetworkUtil() { }
 
-    /**
-     * Find a non-loopback local IP address to show to user.
-     */
+    // ============================
+    // 🧭 Local IP Discovery
+    // ============================
     public static String findLocalIp() {
         try {
-            // Best effort: use local host.
             InetAddress local = InetAddress.getLocalHost();
             if (!local.isLoopbackAddress()) {
                 return local.getHostAddress();
             }
-        } catch (Exception ignore) {
-        }
+        } catch (Exception ignore) { }
 
-        // Fallback: try all interfaces.
         try {
             for (NetworkInterface nif : java.util.Collections.list(NetworkInterface.getNetworkInterfaces())) {
-                if (!nif.isUp() || nif.isLoopback()) {
-                    continue;
-                }
+                if (!nif.isUp() || nif.isLoopback()) continue;
                 for (InetAddress addr : java.util.Collections.list(nif.getInetAddresses())) {
                     if (addr instanceof Inet4Address && !addr.isLoopbackAddress()) {
                         return addr.getHostAddress();
@@ -46,14 +44,12 @@ public final class NetworkUtil {
         } catch (Exception e) {
             LoggerUtil.warn("Unable to detect local IP: " + e.getMessage());
         }
-
-        // Last resort.
         return "127.0.0.1";
     }
 
-    /**
-     * Check if a port is free on this machine.
-     */
+    // ============================
+    // 🔌 Port and Connectivity Tests
+    // ============================
     public static boolean isPortFree(int port) {
         try (ServerSocket ignored = new ServerSocket(port)) {
             ignored.setReuseAddress(true);
@@ -63,9 +59,6 @@ public final class NetworkUtil {
         }
     }
 
-    /**
-     * Check if host:port is reachable within timeout.
-     */
     public static boolean canConnect(String host, int port, int timeoutMs) {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(host, port), timeoutMs);
@@ -75,21 +68,13 @@ public final class NetworkUtil {
         }
     }
 
-//    public static boolean pingReceiver(String targetHost, int port) {
-//        try (Socket socket = new Socket()) {
-//            socket.connect(new InetSocketAddress(targetHost, port), 2000);
-//            LoggerUtil.info("✅ Receiver reachable at " + targetHost + ":" + port);
-//            return true;
-//        } catch (Exception e) {
-//            LoggerUtil.warn("❌ Receiver not reachable at " + targetHost + ":" + port);
-//            return false;
-//        }
-//    }
-
+    // ============================
+    // 📡 Handshake Broadcast (Sender → Receiver)
+    // ============================
     public static void broadcastModeToReceiver(String method, String host, int port) {
         try {
-            java.net.URL url = new java.net.URL("http://" + host + ":" + port + "/handshake?method=" + method);
-            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+            URL url = new URL("http://" + host + ":" + port + "/handshake?method=" + method);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(2000);
             conn.getResponseCode();
             LoggerUtil.info("🔄 Notified receiver of transport mode: " + method);
@@ -98,7 +83,29 @@ public final class NetworkUtil {
         }
     }
 
+    /** ✅ Enhanced: notify with filename + checksum for metadata sync */
+    public static void broadcastModeToReceiver(String method, String host, int port,
+                                               String fileName, String checksum) {
+        try {
+            String query = String.format(
+                    "method=%s&name=%s&checksum=%s",
+                    URLEncoder.encode(method, "UTF-8"),
+                    URLEncoder.encode(fileName, "UTF-8"),
+                    URLEncoder.encode(checksum, "UTF-8")
+            );
+            URL url = new URL("http://" + host + ":" + port + "/handshake?" + query);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(2000);
+            conn.getResponseCode();
+            LoggerUtil.info("[Handshake] Sent metadata → " + method + " / " + fileName);
+        } catch (Exception e) {
+            LoggerUtil.warn("⚠️ Could not notify receiver about transport mode / metadata.");
+        }
+    }
 
+    // ============================
+    // 🌍 Ping / Status Checks
+    // ============================
     public static boolean pingReceiver(String host, int port) {
         try {
             if (host == null || host.isBlank()) {
@@ -107,7 +114,6 @@ public final class NetworkUtil {
                 return false;
             }
 
-            // ✅ ZeroTier check
             if (isZeroTierId(host)) {
                 uiPrompt("🛰️ Checking ZeroTier connection …");
                 boolean ztOk = checkZeroTierStatus(host);
@@ -115,7 +121,6 @@ public final class NetworkUtil {
                 return ztOk;
             }
 
-            // ✅ Standard HTTP / TCP ping check
             uiPrompt("🌐 Pinging receiver at " + host + ":" + port + " …");
             try (Socket socket = new Socket()) {
                 socket.connect(new InetSocketAddress(host, port), 2000);
@@ -125,7 +130,6 @@ public final class NetworkUtil {
                 uiPrompt("❌ Receiver not reachable at " + host + ":" + port);
                 return false;
             }
-
         } catch (Exception e) {
             LoggerUtil.error("Ping failed: " + e.getMessage());
             uiPrompt("❌ Ping error: " + e.getMessage());
@@ -137,20 +141,18 @@ public final class NetworkUtil {
         return target != null && target.matches("^[0-9a-fA-F]{16}$");
     }
 
-    // ✅ Runs `zerotier-cli status` to confirm connectivity
+    // ============================
+    // 🛰️ ZeroTier CLI Status
+    // ============================
     private static boolean checkZeroTierStatus(String networkId) {
         try {
             ProcessBuilder pb = new ProcessBuilder("zerotier-cli", "status");
             pb.redirectErrorStream(true);
             Process proc = pb.start();
-
             BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             StringBuilder output = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
-            }
-
+            while ((line = reader.readLine()) != null) output.append(line).append("\n");
             int exitCode = proc.waitFor();
             if (exitCode == 0 && output.toString().toLowerCase().contains("online")) {
                 LoggerUtil.info("🛰️ ZeroTier is online — network reachable.");
@@ -165,23 +167,34 @@ public final class NetworkUtil {
         }
     }
 
-    // ✅ Send live status updates to /prompt endpoint (used by browser UI)
+    /** Optional: used when debugging general ZeroTier info */
+    public static void logZeroTierStatusIfConfigured() {
+        try {
+            ProcessBuilder pb = new ProcessBuilder("zerotier-cli", "info");
+            Process proc = pb.start();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
+                String line = reader.readLine();
+                if (line != null) {
+                    LoggerUtil.info("[ZeroTier] " + line);
+                } else {
+                    LoggerUtil.info("[ZeroTier] CLI available but returned no info.");
+                }
+            }
+        } catch (IOException e) {
+            LoggerUtil.warn("[ZeroTier] CLI not found or not accessible.");
+        }
+    }
+
+    // ============================
+    // 🖥️ Live UI prompt (for web frontend)
+    // ============================
     private static void uiPrompt(String msg) {
         try {
-            String encoded = java.net.URLEncoder.encode(msg, "UTF-8");
+            String encoded = URLEncoder.encode(msg, "UTF-8");
             URL url = new URL("http://localhost:8080/prompt?msg=" + encoded);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setConnectTimeout(1000);
-            conn.getResponseCode(); // trigger
-        } catch (Exception ignored) {
-            // silent fallback
-        }
+            conn.getResponseCode();
+        } catch (Exception ignored) { }
     }
 }
-
-
-
-
-
-
-

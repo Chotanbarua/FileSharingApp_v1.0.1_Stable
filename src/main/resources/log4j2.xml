@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
-    <Appenders>
+    <Properties>
+        <Property name="LOG_FILE_NAME">${sys:logging.file.name:-logs/file-sharing-app.log}</Property>
+    </Properties>
 
-        <!-- Console output -->
+    <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[%d{HH:mm:ss}] %-5p %c{1} - %m%n"/>
+            <PatternLayout pattern="[%d{HH:mm:ss}] %-5p %c - %m%n"/>
         </Console>
 
-        <!-- Rolling file log -->
-        <RollingFile name="FileLogger"
-                     fileName="logs/filesharingapp.log"
-                     filePattern="logs/filesharingapp-%d{yyyy-MM-dd}-%i.log.gz">
-            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] %-5p %c{1} - %m%n"/>
+        <RollingFile name="RollingFile"
+                     fileName="${LOG_FILE_NAME}"
+                     filePattern="logs/file-sharing-app-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] %-5p %c - %m%n"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="10MB"/>
             </Policies>
             <DefaultRolloverStrategy max="5"/>
         </RollingFile>
-
     </Appenders>
 
     <Loggers>
         <Root level="info">
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="FileLogger"/>
+            <AppenderRef ref="RollingFile"/>
         </Root>
     </Loggers>
 </Configuration>

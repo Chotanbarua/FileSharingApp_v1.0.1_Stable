@@ -17,6 +17,8 @@ public class ZeroTierTransferHandler implements TransferMethod {
 
     @Override
     public void send(String sender, File file, String method, int port, String host) throws Exception {
+
+        NetworkUtil.logZeroTierStatusIfConfigured();
         LoggerUtil.info("[HTTP] Preparing to send file: " + file.getName());
 
         // ✅ Add this line immediately after validating 'file'

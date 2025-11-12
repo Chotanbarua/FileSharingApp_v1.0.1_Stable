@@ -1,34 +1,27 @@
 package com.filesharingapp.core;
 
-import com.filesharingapp.security.HashUtil;
-import com.filesharingapp.utils.AppConfig;
-import com.filesharingapp.utils.LoggerUtil;
 import com.filesharingapp.transfer.TransferFactory;
 import com.filesharingapp.transfer.TransferMethod;
+import com.filesharingapp.utils.HashUtil;
+import com.filesharingapp.utils.LoggerUtil;
+import com.filesharingapp.utils.NetworkUtil;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
  * Receiver
  * --------
- * Handles incoming file transfers and checksum verification.
- *
- * ✅ Adds runInteractive() method (required by MainController & DashboardFrame)
- * ✅ Uses existing verifyChecksumWithRetry() logic
- * ✅ Non-breaking addition — no refactoring elsewhere needed
+ * Handles incoming transfer operations and integrity verification.
  */
 public class Receiver {
 
     private TransferMethod currentTransferHandler;
 
-    /**
-     * Console/interactive entry point for Receiver.
-     * Called by MainController and DashboardFrame.
-     */
     public void runInteractive() {
         try (Scanner in = new Scanner(System.in)) {
-            LoggerUtil.info("📥 Receiver mode initialized.");
+            LoggerUtil.info("✅ Receiver mode initialized.");
 
             LoggerUtil.info("Sender is using which transport? (HTTP / ZeroTier / S3)");
             String method = in.nextLine().trim();
@@ -39,47 +32,77 @@ public class Receiver {
                 return;
             }
 
-            LoggerUtil.info("Enter folder path to save the file (leave blank for current folder):");
-            String savePath = in.nextLine().trim();
-            if (savePath.isEmpty()) {
-                savePath = System.getProperty("user.dir");
+            LoggerUtil.info("Please enter the Sender’s IP or download URL:");
+            String senderHost = in.nextLine().trim();
+
+            LoggerUtil.info("Enter port number (default 8080):");
+            int senderPort = Integer.parseInt(in.nextLine().trim());
+
+            // --- Connectivity check & retry loop ---
+            LoggerUtil.info(PromptManager.TRYING_REACH);
+            int max = 3;
+            boolean ok = false;
+            for (int i = 1; i <= max; i++) {
+                if (NetworkUtil.pingReceiver(senderHost, senderPort)) {
+                    LoggerUtil.info(PromptManager.NETWORK_PING_SUCCESS);
+                    ok = true;
+                    break;
+                }
+                LoggerUtil.warn(PromptManager.retrying(i, max));
+                if (i == max) {
+                    LoggerUtil.error(PromptManager.RETRY_GIVEUP);
+                    return;
+                }
+                Thread.sleep(1000L);
             }
+            if (!ok) return;
 
-            LoggerUtil.info("Starting receiver...");
-            currentTransferHandler.receive(savePath);
+            // --- Ask where to save the incoming file(s) ---
+            LoggerUtil.info(PromptManager.ASK_SAVE_FOLDER);
+            String path = in.nextLine().trim();
+            if (path.isEmpty()) path = System.getProperty("user.home") + File.separator + "Downloads";
+            File saveDir = new File(path);
+            if (!saveDir.exists() && !saveDir.mkdirs()) {
+                LoggerUtil.warn(PromptManager.PERMISSION_DENIED);
+                return;
+            }
+            if (!saveDir.canWrite()) {
+                LoggerUtil.warn(PromptManager.PERMISSION_DENIED);
+                return;
+            }
+            LoggerUtil.info(PromptManager.FREE_SPACE_OK);
 
-            // Example: After receive, verify checksum (mocked expected hash)
-            File received = new File(savePath, "received_file.tmp");
-            verifyChecksumWithRetry(received, "mock_expected_sha256");
+            // --- Log incoming metadata ---
+            String incomingName = TransferContext.getIncomingName();
+            String expectedChecksum = TransferContext.getExpectedChecksum();
+            LoggerUtil.info("Incoming file: " + incomingName + " | Expected checksum: " + expectedChecksum);
 
-            LoggerUtil.success("🎉 File received successfully at " + savePath);
+            // --- Perform actual receive ---
+            currentTransferHandler.receive(saveDir.getAbsolutePath());
+
+            // --- After file download completes ---
+            File downloaded = new File(saveDir, incomingName != null ? incomingName : "received_file.tmp");
+            try {
+                verifyChecksumWithRetry(downloaded, expectedChecksum);
+            } catch (Exception ex) {
+                LoggerUtil.error(PromptManager.VERIFY_FAIL, ex);
+                return;
+            }
+            LoggerUtil.info(PromptManager.VERIFY_OK);
+            LoggerUtil.success("🎉 File received successfully at " + saveDir);
+
         } catch (Exception e) {
-            LoggerUtil.error("Receiver flow failed.", e);
+            LoggerUtil.error("Receiver failed", e);
         }
     }
 
-    /**
-     * Verifies SHA-256 integrity and retries failed transfers.
-     */
-    private void verifyChecksumWithRetry(File downloadedFile, String expectedChecksum) throws Exception {
-        boolean enabled = Boolean.parseBoolean(AppConfig.get("transfer.checksum.enabled", "true"));
-        int maxRetries = Integer.parseInt(AppConfig.get("transfer.checksum.maxRetries", "3"));
-        if (!enabled) return;
-
-        for (int i = 1; i <= maxRetries; i++) {
-            String actual = HashUtil.sha256Hex(downloadedFile);
-            if (actual.equalsIgnoreCase(expectedChecksum)) {
-                LoggerUtil.success("[Receiver] ✅ SHA-256 match on attempt " + i);
-                return;
-            }
-
-            LoggerUtil.warn("[Receiver] ❌ Checksum failed, retry " + i);
-            if (i < maxRetries) {
-                if (downloadedFile.exists()) downloadedFile.delete();
-                currentTransferHandler.receive(downloadedFile.getParent());
-            } else {
-                throw new IllegalStateException("Checksum failed after " + maxRetries + " attempts.");
-            }
+    private static void verifyChecksumWithRetry(File file, String expected) throws Exception {
+        if (expected == null || expected.isBlank()) {
+            LoggerUtil.warn("⚠️ No checksum provided by sender, skipping verification.");
+            return;
         }
+        String actual = HashUtil.sha256Hex(file);
+        if (!actual.equalsIgnoreCase(expected))
+            throw new Exception("Checksum mismatch: " + actual + " ≠ " + expected);
     }
 }

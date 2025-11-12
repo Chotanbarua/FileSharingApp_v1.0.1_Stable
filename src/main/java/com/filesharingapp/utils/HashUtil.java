@@ -1,4 +1,4 @@
-package com.filesharingapp.security;
+package com.filesharingapp.utils;
 
 import java.io.File;
 import java.io.FileInputStream;

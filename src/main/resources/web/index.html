@@ -13,78 +13,84 @@
             max-width: 900px;
             margin: 20px auto;
             background: #fff;
-            padding: 24px;
+            padding: 20px 24px 26px;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         h1 {
-            margin-top: 0;
+            margin: 0 0 16px;
             color: #1f6feb;
-            font-weight: 600;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        h1 span {
+            font-size: 32px;
         }
         label {
             display: block;
             margin-top: 14px;
             font-weight: 600;
+            font-size: 14px;
         }
         input, select {
             width: 100%;
-            padding: 9px;
+            padding: 9px 10px;
             margin-top: 4px;
             border-radius: 6px;
-            border: 1px solid #ccd4e0;
+            border: 1px solid #d0d7de;
             font-size: 14px;
             box-sizing: border-box;
         }
         button {
-            margin-top: 18px;
-            padding: 10px 20px;
+            margin-top: 20px;
+            padding: 11px 22px;
             background: #1f6feb;
             color: #fff;
             border: none;
             border-radius: 999px;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 16px;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
         button:hover {
             background: #144a9b;
         }
         .small {
             font-size: 12px;
-            color: #666;
+            color: #57606a;
         }
         .ip-box {
             padding: 10px 12px;
             background: #f0f4ff;
             border-radius: 8px;
-            margin-bottom: 18px;
-            font-size: 14px;
+            margin-bottom: 16px;
+            font-size: 13px;
         }
         #status {
             margin-top: 10px;
-            min-height: 18px;
+            min-height: 16px;
         }
+        #status.ok    { color: #137333; }
+        #status.warn  { color: #b36b00; }
+        #status.error { color: #b3261e; }
     </style>
 </head>
 <body>
 <div class="wrapper">
-    <h1 tabindex="0">📁 File Sharing App - Web UI</h1>
+    <h1><span>📁</span> <span>File Sharing App - Web UI</span></h1>
 
     <div class="ip-box">
-        <div>
-            Your IP (share this with your partner):
-            <strong><span id="userIP">localhost</span></strong>
-        </div>
+        <div>Your IP (share this with your partner): <strong id="userIP">localhost</strong></div>
         <div class="small">
             If you're on the same Wi-Fi, share this IP with your partner.
             For remote transfers, agree on HTTP URL, ZeroTier Network ID, or S3 details.
         </div>
     </div>
 
-    <!-- Main form -->
     <form id="transferForm">
         <label for="name">Your Name</label>
         <input id="name" type="text" placeholder="Enter your name"/>
@@ -102,160 +108,171 @@
             <option value="S3">AWS S3 (Cloud)</option>
         </select>
 
-        <!-- This label is dynamic based on role -->
+        <!-- One shared control; behavior changes by Role -->
         <label for="file" id="fileLabel">File (Sender only)</label>
         <input id="file" type="file"/>
 
-        <label for="target">
-            Target IP / URL / Bucket
-        </label>
-        <input id="target" type="text"
-               placeholder="HTTP: Receiver IP or http://host:port
-ZeroTier: 16-digit Network ID
-S3: Bucket name or presigned URL"/>
-
+        <label for="target">Target IP / URL / Bucket</label>
+        <input
+                id="target"
+                type="text"
+                placeholder="HTTP: Receiver IP or http://host:port · ZeroTier: 16-digit Network ID · S3: Bucket name or presigned URL"
+        />
         <div class="small">
-            HTTP ➜ Receiver's IP / URL for the upload.<br/>
-            ZeroTier ➜ Your shared ZeroTier Network ID (16-digit hex).<br/>
-            S3 ➜ S3 bucket name or presigned upload URL used by both sides.
+            HTTP ➜ Receiver's IP / URL for the upload. |
+            ZeroTier ➜ Shared 16-digit Network ID. |
+            S3 ➜ Shared bucket name or presigned URL you both use.
         </div>
 
         <label for="port">Port</label>
         <input id="port" type="text" value="8080"/>
 
         <button id="startBtn" type="submit">
-            <span>🚀</span><span>Start</span>
+            <span>🚀</span> <span>Start</span>
         </button>
     </form>
 
-    <!-- Status / helper prompts -->
+    <!-- Status / live messages -->
     <div id="status" class="small" aria-live="polite"></div>
 </div>
 
 <script>
-    // --- Detect & display user's IP (best-effort) ---
-    (function detectLocalIP() {
-        const ipEl = document.getElementById('userIP');
-        // Try public IP first
-        fetch('https://api.ipify.org?format=json')
-            .then(r => r.json())
-            .then(d => {
-                if (d && d.ip) {
-                    ipEl.textContent = d.ip;
-                } else {
-                    ipEl.textContent = location.hostname || 'localhost';
-                }
-            })
-            .catch(() => {
-                ipEl.textContent = location.hostname || 'localhost';
-            });
-    })();
+    // --- Show best-effort public/local IP -------------------------------------
+    async function detectLocalIP() {
+      const ipEl = document.getElementById('userIP');
+      try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.ip) {
+            ipEl.textContent = data.ip;
+            return;
+          }
+        }
+        ipEl.textContent = location.hostname || 'localhost';
+      } catch (e) {
+        ipEl.textContent = location.hostname || 'localhost';
+      }
+    }
 
-    // --- Form behavior & validation ---
+    // --- Simple helper to set status style/text -------------------------------
+    function setStatus(text, level) {
+      const el = document.getElementById('status');
+      el.textContent = text || '';
+      el.classList.remove('ok', 'warn', 'error');
+      if (level) el.classList.add(level);
+    }
+
+    // --- Online / offline indicator -------------------------------------------
+    function updateOnlineStatus() {
+      if (navigator.onLine) {
+        setStatus('✅ You appear online. Configure the fields above and click Start.', 'ok');
+      } else {
+        setStatus('⚠️ You are offline. Transfers will not work until the network is back.', 'warn');
+      }
+    }
+
+    window.addEventListener('online',  updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    window.addEventListener('load', () => {
+      detectLocalIP();
+      updateOnlineStatus();
+    });
+
+    // --- Form behavior + validation -------------------------------------------
     (function () {
-        const form     = document.getElementById('transferForm');
-        const roleEl   = document.getElementById('role');
-        const methodEl = document.getElementById('method');
-        const targetEl = document.getElementById('target');
-        const nameEl   = document.getElementById('name');
-        const fileEl   = document.getElementById('file');
-        const fileLabel = document.getElementById('fileLabel');
-        const statusEl = document.getElementById('status');
+      const form     = document.getElementById('transferForm');
+      const roleEl   = document.getElementById('role');
+      const methodEl = document.getElementById('method');
+      const targetEl = document.getElementById('target');
+      const nameEl   = document.getElementById('name');
+      const fileEl   = document.getElementById('file');
+      const fileLabel = document.getElementById('fileLabel');
 
-        // Dynamic label + simple UX toggle
-        function updateRoleView() {
-            const role = roleEl.value;
-            if (role === 'Sender') {
-                fileLabel.textContent = 'File (Sender only)';
-                fileEl.disabled = false;
-            } else {
-                fileLabel.textContent = 'Save Location (Receiver)';
-                // Receiver doesn’t choose a file in browser UI
-                fileEl.value = '';
-                fileEl.disabled = true;
-            }
+      // Toggle label + folder picking based on role
+      function syncRoleUI() {
+        const role = roleEl.value;
+
+        // Always clear any directory attrs first
+        fileEl.removeAttribute('webkitdirectory');
+        fileEl.removeAttribute('directory');
+        fileEl.value = '';
+
+        if (role === 'Sender') {
+          fileLabel.textContent = 'File (Sender only)';
+          fileEl.disabled = false;
+        } else {
+          // Receiver: choose where to save incoming files (folder)
+          fileLabel.textContent = 'Save Location (Receiver)';
+          // Let advanced browsers choose a directory
+          fileEl.setAttribute('webkitdirectory', '');
+          fileEl.setAttribute('directory', '');
+          fileEl.disabled = false;
+        }
+      }
+
+      roleEl.addEventListener('change', syncRoleUI);
+      syncRoleUI(); // initial
+
+      form.addEventListener('submit', function (e) {
+        setStatus('', null);
+
+        const role   = roleEl.value;
+        const method = methodEl.value;
+        const target = targetEl.value.trim();
+
+        // 1) Name required
+        if (!nameEl.value.trim()) {
+          e.preventDefault();
+          setStatus('Please tell me your name 😊', 'warn');
+          return;
         }
 
-        roleEl.addEventListener('change', updateRoleView);
-        updateRoleView(); // initial
+        // 2) Sender must pick at least one file
+        if (role === 'Sender' && !fileEl.files.length) {
+          e.preventDefault();
+          setStatus('You did not pick any file. Please select at least one file.', 'error');
+          return;
+        }
 
-        form.addEventListener('submit', function (e) {
-            statusEl.textContent = '';
-
-            const role   = roleEl.value;
-            const method = methodEl.value;
-            const target = targetEl.value.trim();
-
-            // 1) Require name
-            if (!nameEl.value.trim()) {
-                e.preventDefault();
-                statusEl.textContent = "Please tell me your name 😊";
-                return;
-            }
-
-            // 2) Sender must pick a file
-            if (role === 'Sender' && !fileEl.files.length) {
-                e.preventDefault();
-                statusEl.textContent = "You did not pick any file. Please select at least one file.";
-                return;
-            }
-
-            // 3) ZeroTier-specific validation (critical prompt)
-            if (role === 'Sender' && method === 'ZeroTier') {
-                const networkId = target;
-                const validZT = /^[0-9a-f]{16}$/i.test(networkId);
-                if (!validZT) {
-                    e.preventDefault();
-                    statusEl.textContent =
-                        "⚠️ Invalid ZeroTier Network ID. It should be a 16-digit hexadecimal (e.g., abcd1234ef567890).";
-                    return;
-                }
-            }
-
-            // 4) Sender + real transport => target required
-            const needsTarget =
-                role === 'Sender' &&
-                (method === 'HTTP' || method === 'ZeroTier' || method === 'S3');
-
-            if (needsTarget && !target) {
-                e.preventDefault();
-                statusEl.textContent =
-                    "Please enter the Receiver IP / URL / Bucket before starting 🚦";
-                return;
-            }
-
-            // 5) Friendly footer AFTER valid input
-            if (role === 'Receiver') {
-                statusEl.textContent =
-                    "Hi friend 👋 You’re in Receiver mode. Keep this page open and start the transfer from the desktop app.";
-            } else {
-                statusEl.textContent =
-                    "Awesome 🚀 Preparing your transfer. Continue in the desktop app to complete the send.";
-            }
-
-            // NOTE:
-            // This Web UI is a companion front-end. It currently does not
-            // POST the file; the desktop/Java side reads these details or
-            // uses them for guidance.
+        // 3) ZeroTier: validate Network ID format (16 hex chars)
+        if (role === 'Sender' && method === 'ZeroTier') {
+          const validZT = /^[0-9a-f]{16}$/i.test(target);
+          if (!validZT) {
             e.preventDefault();
-        });
-
-        // Optional: listen to /prompt so backend can push live messages here
-        function pollPrompt() {
-            fetch('/prompt')
-                .then(r => r.text())
-                .then(text => {
-                    if (text && text !== 'OK') {
-                        statusEl.textContent = text;
-                    }
-                })
-                .catch(() => {/* ignore */})
-                .finally(() => {
-                    setTimeout(pollPrompt, 2000);
-                });
+            setStatus(
+              '⚠️ Invalid ZeroTier Network ID. It should be a 16-digit hexadecimal (e.g., abcd1234ef567890).',
+              'error'
+            );
+            return;
+          }
         }
-        // Uncomment when your backend /prompt endpoint is active:
-        // pollPrompt();
+
+        // 4) Sender + real transport => Target required
+        const needsTarget =
+          role === 'Sender' &&
+          (method === 'HTTP' || method === 'ZeroTier' || method === 'S3');
+
+        if (needsTarget && !target) {
+          e.preventDefault();
+          setStatus('Please enter the Receiver IP / URL / Bucket before starting 🚦', 'error');
+          return;
+        }
+
+        // 5) Final friendly text
+        if (role === 'Receiver') {
+          setStatus(
+            'Hi friend 👋 Choose your save location (folder) and wait for the sender to start the transfer.',
+            'ok'
+          );
+        } else {
+          setStatus('Awesome 🚀 Validated. Switch to the desktop app / backend to start the real transfer.', 'ok');
+        }
+
+        // This HTML front-end is a helper UI. Prevent navigation here;
+        // the Java desktop/backend handles the actual transfer.
+        e.preventDefault();
+      });
     })();
 </script>
 </body>
