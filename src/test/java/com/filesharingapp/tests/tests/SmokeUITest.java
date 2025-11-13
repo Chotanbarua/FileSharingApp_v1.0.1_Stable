@@ -2,7 +2,6 @@ package com.filesharingapp.tests.tests;
 
 import com.filesharingapp.tests.base.TestBase;
 import com.filesharingapp.tests.pages.IndexPage;
-import com.filesharingapp.tests.utils.ConfigReader;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -10,40 +9,33 @@ import org.testng.annotations.Test;
  * SmokeUITest
  * -----------
  * Simple sanity test using the Page Object.
+ * This class EXTENDS TestBase because it is a normal TestNG test.
  *
- * This class is used by FactoryRunner to run on multiple browsers.
- *
- * It reads test data from config.properties so you don't hardcode
- * values inside Java.
+ * It does NOT create its own IndexPage.
+ * It reuses the per-thread IndexPage from TestBase.indexPage().
  */
 public class SmokeUITest extends TestBase {
 
-    /** Constructor accepts browser from FactoryRunner. */
+    /** FactoryRunner passes browser name into this constructor. */
     public SmokeUITest(String browser) {
         super(browser);
     }
 
     @Test
     public void fillSenderAndValidateStatus() {
-        // setUp() is called automatically by TestBase via @BeforeMethod.
+        // setUp() in TestBase already opened the app.
 
-        IndexPage page = new IndexPage();
+        IndexPage page = TestBase.indexPage();
 
-        // Read data from config (with defaults that match your feature file).
-        String name   = ConfigReader.get("senderName", "Syed");
-        String role   = ConfigReader.get("senderRole", "Sender");
-        String method = ConfigReader.get("senderMethod", "HTTP (Simple / LAN)");
-        String target = ConfigReader.get("senderTarget", "127.0.0.1");
-        String port   = ConfigReader.get("senderPort", "8080");
-
-        page.setName(name);
-        page.chooseRole(role);
-        page.chooseMethod(method);
-        page.setTarget(target);
-        page.setPort(port);
+        // For smoke test we keep simple example values.
+        page.setName("Syed");
+        page.chooseRole("Sender");
+        page.chooseMethod("HTTP (Simple / LAN)");
+        page.setTarget("127.0.0.1");
+        page.setPort("8080");
         page.clickStart();
 
-        String status = page.status(); // expects friendly message from your JS
+        String status = page.status();
         Assert.assertTrue(status != null && !status.isBlank(), "Status should not be empty");
     }
 }

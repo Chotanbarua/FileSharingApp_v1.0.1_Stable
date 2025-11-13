@@ -12,56 +12,54 @@ import java.time.Duration;
  * SeleniumActions
  * ---------------
  * Reusable, beginner-friendly wrappers around Selenium.
- *
- * Every method uses TestBase.getDriver() (ThreadLocal-safe),
- * so it works correctly with parallel tests.
+ * Every method uses TestBase.getDriver() (ThreadLocal-safe).
  */
 public final class SeleniumActions {
 
     private SeleniumActions() {}
 
-    /** Short helper to get current thread's WebDriver. */
+    /** Get the WebDriver for the current thread. */
     private static WebDriver d() {
         return TestBase.getDriver();
     }
 
-    /** Build a WebDriverWait with 10-second timeout. */
+    /** Build a WebDriverWait with a 10-second timeout. */
     private static WebDriverWait waitUntil() {
         return new WebDriverWait(d(), Duration.ofSeconds(10));
     }
 
-    /** Click an element when it is clickable. */
+    /** Clicks an element when it is clickable. */
     public static void click(By locator) {
         waitUntil().until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
 
-    /** Type text into an input after clearing it. */
+    /** Types text into an input after clearing it. */
     public static void sendKeys(By locator, String text) {
         WebElement el = waitUntil().until(ExpectedConditions.visibilityOfElementLocated(locator));
         el.clear();
         el.sendKeys(text == null ? "" : text);
     }
 
-    /** Select drop-down option by visible text. */
+    /** Selects a drop-down option by its visible text. */
     public static void selectByText(By locator, String visibleText) {
         WebElement el = waitUntil().until(ExpectedConditions.visibilityOfElementLocated(locator));
         new Select(el).selectByVisibleText(visibleText);
     }
 
-    /** Get text from an element. */
+    /** Returns the element text (trimmed). */
     public static String text(By locator) {
         return waitUntil().until(ExpectedConditions.visibilityOfElementLocated(locator))
                 .getText()
                 .trim();
     }
 
-    /** Upload a file via <input type="file">. */
+    /** Small helper to upload a file with <input type="file">. */
     public static void upload(By locator, String absolutePath) {
         WebElement el = waitUntil().until(ExpectedConditions.presenceOfElementLocated(locator));
         el.sendKeys(absolutePath);
     }
 
-    /** Wait until the page is fully loaded (document.readyState == complete). */
+    /** Waits until the page is fully loaded (document.readyState == complete). */
     public static void waitForPageReady() {
         new WebDriverWait(d(), Duration.ofSeconds(15)).until(
                 wd -> ((JavascriptExecutor) wd)

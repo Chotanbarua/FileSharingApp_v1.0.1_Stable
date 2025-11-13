@@ -1,5 +1,6 @@
 package com.filesharingapp.tests.base;
 
+import com.filesharingapp.tests.pages.IndexPage;
 import com.filesharingapp.tests.utils.ConfigReader;
 import com.filesharingapp.tests.utils.DriverFactory;
 import org.openqa.selenium.WebDriver;
@@ -10,36 +11,39 @@ import org.testng.annotations.Parameters;
 /**
  * TestBase
  * --------
- * Think of this class as the "browser boss".
+ * Purpose:
+ *   This class is the "driver boss" for all tests.
  *
- * - It creates the browser (Chrome / Edge).
- * - It keeps ONE WebDriver per test thread using ThreadLocal.
- * - It opens the base URL before each test.
+ * Main jobs:
+ *   1) Create a browser (WebDriver) for each test thread.
+ *   2) Remember that browser in a ThreadLocal box.
+ *   3) Open the base URL of the web app.
+ *   4) Create a Page Object (IndexPage) per thread.
  *
- * ThreadLocal<WebDriver>:
- * - Imagine each parallel test has its own little box.
- * - Inside the box is its own WebDriver.
- * - No test touches another test's box.
+ * Why ThreadLocal?
+ *   - Think of each test thread as a student.
+ *   - ThreadLocal<WebDriver> is a tiny locker for that student.
+ *   - Each student gets their own browser in their own locker.
+ *   - No student can touch another student's browser.
  */
 public abstract class TestBase {
 
-    /**
-     * TL_DRIVER (ThreadLocal driver)
-     * ------------------------------
-     * One WebDriver per thread.
-     * This keeps parallel tests from fighting over the same browser.
-     */
+    /** One WebDriver per thread (for parallel runs). */
     protected static final ThreadLocal<WebDriver> TL_DRIVER = new ThreadLocal<>();
 
-    /** Which browser this test should use (chrome, edge, etc.). */
+    /** One IndexPage per thread, reusing the same driver. */
+    private static final ThreadLocal<IndexPage> TL_INDEX_PAGE = new ThreadLocal<>();
+
+    /** Which browser this test should use (chrome / edge). */
     protected String browser;
 
-    /** Base URL of your app (comes from config.properties by default). */
+    /** Base URL of the FileSharing web app. */
     protected String baseUrl = ConfigReader.get("baseUrl", "http://localhost:8080");
 
     /**
      * Default constructor.
-     * If nobody tells us the browser, we read it from config.properties.
+     * If nobody tells us the browser, read it from config.properties
+     * or from a JVM system property "browser".
      */
     public TestBase() {
         this.browser = ConfigReader.get("browser", "chrome");
@@ -47,7 +51,7 @@ public abstract class TestBase {
 
     /**
      * Constructor that accepts a browser name.
-     * Used by @Factory to create tests for many browsers.
+     * Used by FactoryRunner (for chrome + edge).
      */
     public TestBase(String browser) {
         this.browser = (browser == null || browser.isBlank())
@@ -58,25 +62,31 @@ public abstract class TestBase {
     /**
      * setUp
      * -----
-     * This method runs BEFORE each @Test.
+     * Runs BEFORE each TestNG @Test method.
      *
      * Steps:
-     * 1. Read baseUrl from TestNG parameters if provided.
-     * 2. If this thread has no driver yet, create one using DriverFactory.
-     * 3. Open the base URL in the browser.
+     *   1) Optionally read baseUrl from TestNG XML parameter.
+     *   2) If this thread has no WebDriver yet, create one.
+     *   3) If this thread has no IndexPage yet, create one.
+     *   4) Open the base URL in the browser.
      */
     @Parameters({"baseUrl"})
     @BeforeMethod(alwaysRun = true)
     public void setUp(String... baseUrlFromXml) {
-        // If TestNG XML gives us a baseUrl, override the default.
+        // If TestNG XML passed a baseUrl, use that instead of the default.
         if (baseUrlFromXml != null && baseUrlFromXml.length > 0 && baseUrlFromXml[0] != null) {
             this.baseUrl = baseUrlFromXml[0];
         }
 
-        // Only create a driver if this thread doesn't have one yet.
+        // Create WebDriver if this thread does not have one yet.
         if (TL_DRIVER.get() == null) {
             WebDriver driver = DriverFactory.create(browser);
             TL_DRIVER.set(driver);
+        }
+
+        // Create IndexPage if this thread does not have one yet.
+        if (TL_INDEX_PAGE.get() == null) {
+            TL_INDEX_PAGE.set(new IndexPage());
         }
 
         // Open the app URL.
@@ -86,8 +96,9 @@ public abstract class TestBase {
     /**
      * tearDown
      * --------
-     * This method runs AFTER each @Test.
-     * It closes the browser and removes the driver from ThreadLocal.
+     * Runs AFTER each TestNG @Test method.
+     * It calls clearDriver(), which closes the browser and
+     * cleans both ThreadLocal lockers.
      */
     @AfterMethod(alwaysRun = true)
     public void tearDown() {
@@ -97,24 +108,41 @@ public abstract class TestBase {
     /**
      * getDriver
      * ---------
-     * Static helper so ANY class can ask:
-     * "What is my WebDriver for this thread?"
+     * Static helper: any class can call TestBase.getDriver()
+     * to get "its" WebDriver for the current thread.
      */
     public static WebDriver getDriver() {
         return TL_DRIVER.get();
     }
 
     /**
+     * indexPage
+     * ---------
+     * Static helper: any class can call TestBase.indexPage()
+     * to get the IndexPage for the current thread.
+     * StepDefs and tests will use this instead of "new IndexPage()".
+     */
+    public static IndexPage indexPage() {
+        return TL_INDEX_PAGE.get();
+    }
+
+    /**
      * clearDriver
      * -----------
-     * Safely quits the browser and clears the ThreadLocal.
-     * Called from tearDown and listeners.
+     * Safely quits the browser for the current thread and
+     * cleans both ThreadLocals.
+     *
+     * This is used by:
+     *   - tearDown()
+     *   - CucumberHooks
+     *   - ExtentTestListener
      */
     public static void clearDriver() {
         WebDriver d = TL_DRIVER.get();
         if (d != null) {
             d.quit();
-            TL_DRIVER.remove();
         }
+        TL_DRIVER.remove();
+        TL_INDEX_PAGE.remove();
     }
 }

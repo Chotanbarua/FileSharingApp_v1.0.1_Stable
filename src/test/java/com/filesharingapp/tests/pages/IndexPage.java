@@ -7,15 +7,14 @@ import org.openqa.selenium.WebDriver;
 /**
  * IndexPage (Page Object)
  * -----------------------
- * This class represents your index.html page.
+ * This class represents your index.html screen.
  *
- * Idea:
- * - Each locator = an element on the page.
- * - Each method = one small user action.
+ * Each field below is a locator (an address on the web page).
+ * Each method below is a small user action.
  */
 public class IndexPage {
 
-    // ======= Locators (IDs from index.html) =======
+    // Locators (match your index.html IDs)
     private static final By NAME       = By.id("name");
     private static final By ROLE       = By.id("role");
     private static final By METHOD     = By.id("method");
@@ -24,33 +23,25 @@ public class IndexPage {
     private static final By PORT       = By.id("port");
     private static final By START      = By.id("startBtn");
     private static final By STATUS     = By.id("status");
-    private static final By FILE_LABEL = By.id("fileLabel");
+    private static final By FILE_LABEL = By.id("fileLabel"); // label above file input
 
-    /**
-     * Empty constructor.
-     * We do NOT store WebDriver here because SeleniumActions
-     * pulls driver from TestBase.getDriver().
-     */
+    /** Empty constructor. We do not keep WebDriver here. */
     public IndexPage() {
-        // nothing to store
     }
 
-    /**
-     * Constructor that accepts WebDriver (for compatibility with older code).
-     * We ignore the argument but keep it so old code still compiles.
-     */
+    /** Optional constructor, kept only for compatibility. It does nothing. */
     public IndexPage(WebDriver driver) {
-        // no-op on purpose
+        // no-op
     }
 
-    // ======= Actions =======
+    // ===== Actions =====
 
-    /** Type the user's name into the name box. */
+    /** Type the user's name into the name field. */
     public void setName(String name) {
         SeleniumActions.sendKeys(NAME, name);
     }
 
-    /** Choose Sender or Receiver from the role dropdown. */
+    /** Choose Sender or Receiver from the role drop-down. */
     public void chooseRole(String role) {
         SeleniumActions.selectByText(ROLE, role);
     }
@@ -65,12 +56,12 @@ public class IndexPage {
         SeleniumActions.upload(FILE, absolutePath);
     }
 
-    /** Enter target IP / URL / bucket. */
+    /** Enter the target IP or host. */
     public void setTarget(String target) {
         SeleniumActions.sendKeys(TARGET, target);
     }
 
-    /** Enter port number. */
+    /** Enter the port number. */
     public void setPort(String port) {
         SeleniumActions.sendKeys(PORT, port);
     }
@@ -80,17 +71,17 @@ public class IndexPage {
         SeleniumActions.click(START);
     }
 
-    /** Read the status message text. */
+    /** Get the status text from the status area. */
     public String statusText() {
         return SeleniumActions.text(STATUS);
     }
 
-    /** Older helper used in some tests; just forwards to statusText(). */
+    /** Alias used in some tests. */
     public String status() {
         return statusText();
     }
 
-    /** Read the label text above the file control. */
+    /** Get the label text above the file input. */
     public String fileLabelText() {
         return SeleniumActions.text(FILE_LABEL);
     }
