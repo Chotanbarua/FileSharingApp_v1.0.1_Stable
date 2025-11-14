@@ -1,0 +1,273 @@
+[2025-11-12 11:27:37] INFO  FileSharingApp - [FileSharingServer] ✅ Running at http://localhost:8080
+[2025-11-12 12:05:20] INFO  FileSharingApp - [FileSharingServer] ✅ Running at http://localhost:8080
+[2025-11-12 12:05:21] INFO  FileSharingApp - Sharing active transport method with receiver.
+[2025-11-12 12:05:21] ERROR FileSharingApp - Failed to start server
+java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:8080
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:344) ~[jetty-server-11.0.20.jar:11.0.20]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:304) ~[jetty-server-11.0.20.jar:11.0.20]
+	at org.eclipse.jetty.server.Server.lambda$doStart$0(Server.java:402) ~[jetty-server-11.0.20.jar:11.0.20]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(Unknown Source) ~[?:?]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline.forEach(Unknown Source) ~[?:?]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:398) ~[jetty-server-11.0.20.jar:11.0.20]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93) ~[jetty-util-11.0.20.jar:11.0.20]
+	at com.filesharingapp.server.FileSharingServer.startSharedServer(FileSharingServer.java:100) ~[classes/:?]
+	at com.filesharingapp.tests.StepDefinitions.the_server_is_running(StepDefinitions.java:28) ~[test-classes/:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[?:?]
+	at io.cucumber.java.Invoker.doInvoke(Invoker.java:66) ~[cucumber-java-7.15.0.jar:7.15.0]
+	at io.cucumber.java.Invoker.invoke(Invoker.java:24) ~[cucumber-java-7.15.0.jar:7.15.0]
+	at io.cucumber.java.AbstractGlueDefinition.invokeMethod(AbstractGlueDefinition.java:47) ~[cucumber-java-7.15.0.jar:7.15.0]
+	at io.cucumber.java.JavaStepDefinition.execute(JavaStepDefinition.java:29) ~[cucumber-java-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.CoreStepDefinition.execute(CoreStepDefinition.java:66) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.PickleStepDefinitionMatch.runStep(PickleStepDefinitionMatch.java:63) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.ExecutionMode$1.execute(ExecutionMode.java:10) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.TestStep.executeStep(TestStep.java:84) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.TestStep.run(TestStep.java:56) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.PickleStepTestStep.run(PickleStepTestStep.java:51) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.TestCase.run(TestCase.java:84) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.Runner.runPickle(Runner.java:75) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.testng.TestNGCucumberRunner.lambda$runScenario$1(TestNGCucumberRunner.java:132) ~[cucumber-testng-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runtime.CucumberExecutionContext.lambda$runTestCase$5(CucumberExecutionContext.java:137) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runtime.RethrowingThrowableCollector.executeAndThrow(RethrowingThrowableCollector.java:23) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runtime.CucumberExecutionContext.runTestCase(CucumberExecutionContext.java:137) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.testng.TestNGCucumberRunner.runScenario(TestNGCucumberRunner.java:129) ~[cucumber-testng-7.15.0.jar:7.15.0]
+	at io.cucumber.testng.AbstractTestNGCucumberTests.runScenario(AbstractTestNGCucumberTests.java:35) ~[cucumber-testng-7.15.0.jar:7.15.0]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[?:?]
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134) ~[testng-7.10.2.jar:7.10.2]
+	at java.base/java.util.ArrayList.forEach(Unknown Source) [?:?]
+	at org.testng.TestRunner.privateRun(TestRunner.java:739) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestRunner.run(TestRunner.java:614) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:421) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:413) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:373) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.run(SuiteRunner.java:312) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1274) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1208) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuites(TestNG.java:1112) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.run(TestNG.java:1079) [testng-7.10.2.jar:7.10.2]
+	at com.intellij.rt.testng.IDEARemoteTestNG.run(IDEARemoteTestNG.java:65) [testng-rt.jar:?]
+	at com.intellij.rt.testng.RemoteTestNGStarter.main(RemoteTestNGStarter.java:105) [testng-rt.jar:?]
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.bind(Unknown Source) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.netBind(Unknown Source) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(Unknown Source) ~[?:?]
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:339) ~[jetty-server-11.0.20.jar:11.0.20]
+	... 65 more
+[2025-11-12 12:05:21] ERROR FileSharingApp - Failed to start server
+java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:8080
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:344) ~[jetty-server-11.0.20.jar:11.0.20]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:304) ~[jetty-server-11.0.20.jar:11.0.20]
+	at org.eclipse.jetty.server.Server.lambda$doStart$0(Server.java:402) ~[jetty-server-11.0.20.jar:11.0.20]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(Unknown Source) ~[?:?]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(Unknown Source) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline.forEach(Unknown Source) ~[?:?]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:398) ~[jetty-server-11.0.20.jar:11.0.20]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93) ~[jetty-util-11.0.20.jar:11.0.20]
+	at com.filesharingapp.server.FileSharingServer.startSharedServer(FileSharingServer.java:100) ~[classes/:?]
+	at com.filesharingapp.tests.StepDefinitions.the_server_is_running(StepDefinitions.java:28) ~[test-classes/:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[?:?]
+	at io.cucumber.java.Invoker.doInvoke(Invoker.java:66) ~[cucumber-java-7.15.0.jar:7.15.0]
+	at io.cucumber.java.Invoker.invoke(Invoker.java:24) ~[cucumber-java-7.15.0.jar:7.15.0]
+	at io.cucumber.java.AbstractGlueDefinition.invokeMethod(AbstractGlueDefinition.java:47) ~[cucumber-java-7.15.0.jar:7.15.0]
+	at io.cucumber.java.JavaStepDefinition.execute(JavaStepDefinition.java:29) ~[cucumber-java-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.CoreStepDefinition.execute(CoreStepDefinition.java:66) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.PickleStepDefinitionMatch.runStep(PickleStepDefinitionMatch.java:63) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.ExecutionMode$1.execute(ExecutionMode.java:10) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.TestStep.executeStep(TestStep.java:84) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.TestStep.run(TestStep.java:56) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.PickleStepTestStep.run(PickleStepTestStep.java:51) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.TestCase.run(TestCase.java:84) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runner.Runner.runPickle(Runner.java:75) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.testng.TestNGCucumberRunner.lambda$runScenario$1(TestNGCucumberRunner.java:132) ~[cucumber-testng-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runtime.CucumberExecutionContext.lambda$runTestCase$5(CucumberExecutionContext.java:137) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runtime.RethrowingThrowableCollector.executeAndThrow(RethrowingThrowableCollector.java:23) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.core.runtime.CucumberExecutionContext.runTestCase(CucumberExecutionContext.java:137) ~[cucumber-core-7.15.0.jar:7.15.0]
+	at io.cucumber.testng.TestNGCucumberRunner.runScenario(TestNGCucumberRunner.java:129) ~[cucumber-testng-7.15.0.jar:7.15.0]
+	at io.cucumber.testng.AbstractTestNGCucumberTests.runScenario(AbstractTestNGCucumberTests.java:35) ~[cucumber-testng-7.15.0.jar:7.15.0]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[?:?]
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134) ~[testng-7.10.2.jar:7.10.2]
+	at java.base/java.util.ArrayList.forEach(Unknown Source) [?:?]
+	at org.testng.TestRunner.privateRun(TestRunner.java:739) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestRunner.run(TestRunner.java:614) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:421) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:413) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:373) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.run(SuiteRunner.java:312) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1274) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1208) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuites(TestNG.java:1112) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.run(TestNG.java:1079) [testng-7.10.2.jar:7.10.2]
+	at com.intellij.rt.testng.IDEARemoteTestNG.run(IDEARemoteTestNG.java:65) [testng-rt.jar:?]
+	at com.intellij.rt.testng.RemoteTestNGStarter.main(RemoteTestNGStarter.java:105) [testng-rt.jar:?]
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.bind(Unknown Source) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.netBind(Unknown Source) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(Unknown Source) ~[?:?]
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:339) ~[jetty-server-11.0.20.jar:11.0.20]
+	... 65 more
+[2025-11-12 21:14:28] INFO  FileSharingApp - 📸 Welcome to the Secure Photo Station!
+[2025-11-12 21:14:28] INFO  FileSharingApp - Starting File Sharing App...
+[2025-11-12 21:14:28] INFO  FileSharingApp - Welcome to the File Sharing App! 🎉
+[2025-11-12 21:14:28] INFO  FileSharingApp - Not sure what to do? Click ‘Help’ for a simple 1-2-3 step guide.
+[2025-11-12 21:14:28] INFO  FileSharingApp - Are you a Sender (S) or a Receiver (R)?
+[2025-11-12 21:14:51] INFO  FileSharingApp - ✅ Sender mode initialized.
+[2025-11-12 21:14:51] INFO  FileSharingApp - Enter full file path to send:
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"INFO","message":"✅ Loaded application.properties","transferId":"N/A","timestamp":"2025-11-14T02:27:38.304766200Z"}
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"SUCCESS","message":"[FileSharingServer] Running at http://localhost:8080","transferId":"N/A","timestamp":"2025-11-14T02:27:38.487781700Z"}
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"INFO","message":"[Sender-UI] User: TestUser | Mode: HTTP","transferId":"N/A","timestamp":"2025-11-14T02:27:38.546481300Z"}
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"INFO","message":"[Factory] Using HTTP transfer service.","transferId":"N/A","timestamp":"2025-11-14T02:27:38.550530400Z"}
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"INFO","message":"📦 Zipping file before upload...","transferId":"N/A","timestamp":"2025-11-14T02:27:38.552489200Z"}
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"INFO","message":"[Zip] Created archive: test_file3410885746686759993.txt.zip","transferId":"N/A","timestamp":"2025-11-14T02:27:38.567904Z"}
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"INFO","message":"File size: 0.00 MB","transferId":"N/A","timestamp":"2025-11-14T02:27:38.577765800Z"}
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"INFO","message":"🌐 [HTTP] Preparing upload to 127.0.0.1:8080","transferId":"N/A","timestamp":"2025-11-14T02:27:38.583766800Z"}
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"INFO","message":"🧮 [HTTP] SHA-256 checksum: be172b25bb22ff2a9602d514e066b8f06d61846634434b623885c4f510c0c787","transferId":"N/A","timestamp":"2025-11-14T02:27:38.584766Z"}
+[2025-11-13 21:27:38] WARN  FileSharingApp - {"level":"WARN","message":"[Status] No progress for: http-be172b25bb22-1763087258584","transferId":"N/A","timestamp":"2025-11-14T02:27:38.659015500Z"}
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"INFO","message":"🌐 [HTTP] File size=216, resumeFrom=0","transferId":"N/A","timestamp":"2025-11-14T02:27:38.666680400Z"}
+[2025-11-13 21:27:38] ERROR FileSharingApp - {"level":"ERROR","message":"❌ Upload failed: HTTP 400 → <html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=ISO-8859-1\"/>\n<title>Error 400 Unable to parse form content<\/title>\n<\/head>\n<body><h2>HTTP ERROR 400 Unable to parse form content<\/h2>\n<table>\n<tr><th>URI:<\/th><td>/upload<\/td><\/tr>\n<tr><th>STATUS:<\/th><td>400<\/td><\/tr>\n<tr><th>MESSAGE:<\/th><td>Unable to parse form content<\/td><\/tr>\n<tr><th>SERVLET:<\/th><td>com.filesharingapp.server.UploadServlet-40f70521<\/td><\/tr>\n<tr><th>CAUSED BY:<\/th><td>org.eclipse.jetty.http.BadMessageException: 400: Unable to parse form content<\/td><\/tr>\n<tr><th>CAUSED BY:<\/th><td>org.eclipse.jetty.util.Utf8Appendable$NotUtf8Exception: Not valid UTF8! byte Ab in state 0<\/td><\/tr>\n<\/table>\n<h3>Caused by:<\/h3><pre>org.eclipse.jetty.http.BadMessageException: 400: Unable to parse form content\r\n\tat org.eclipse.jetty.server.Request.getParameters(Request.java:471)\r\n\tat org.eclipse.jetty.server.Request.getParameter(Request.java:1049)\r\n\tat com.filesharingapp.server.UploadServlet.doPost(UploadServlet.java:39)\r\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:520)\r\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:587)\r\n\tat org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:764)\r\n\tat org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:529)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextHandle(ScopedHandler.java:221)\r\n\tat org.eclipse.jetty.server.session.SessionHandler.doHandle(SessionHandler.java:1580)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextHandle(ScopedHandler.java:221)\r\n\tat org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1381)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextScope(ScopedHandler.java:176)\r\n\tat org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:484)\r\n\tat org.eclipse.jetty.server.session.SessionHandler.doScope(SessionHandler.java:1553)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextScope(ScopedHandler.java:174)\r\n\tat org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1303)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:129)\r\n\tat org.eclipse.jetty.server.handler.HandlerList.handle(HandlerList.java:51)\r\n\tat org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:122)\r\n\tat org.eclipse.jetty.server.Server.handle(Server.java:563)\r\n\tat org.eclipse.jetty.server.HttpChannel$RequestDispatchable.dispatch(HttpChannel.java:1598)\r\n\tat org.eclipse.jetty.server.HttpChannel.dispatch(HttpChannel.java:753)\r\n\tat org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:501)\r\n\tat org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:287)\r\n\tat org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:314)\r\n\tat org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:100)\r\n\tat org.eclipse.jetty.io.SelectableChannelEndPoint$1.run(SelectableChannelEndPoint.java:53)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.runTask(AdaptiveExecutionStrategy.java:421)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.consumeTask(AdaptiveExecutionStrategy.java:390)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.tryProduce(AdaptiveExecutionStrategy.java:277)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.produce(AdaptiveExecutionStrategy.java:193)\r\n\tat org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:969)\r\n\tat org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.doRunJob(QueuedThreadPool.java:1194)\r\n\tat org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:1149)\r\n\tat java.base/java.lang.Thread.run(Thread.java:840)\r\nCaused by: org.eclipse.jetty.util.Utf8Appendable$NotUtf8Exception: Not valid UTF8! byte Ab in state 0\r\n\tat org.eclipse.jetty.util.Utf8Appendable.appendByte(Utf8Appendable.java:249)\r\n\tat org.eclipse.jetty.util.Utf8Appendable.append(Utf8Appendable.java:151)\r\n\tat org.eclipse.jetty.util.UrlEncoded.decodeUtf8To(UrlEncoded.java:469)\r\n\tat org.eclipse.jetty.util.UrlEncoded.decodeTo(UrlEncoded.java:515)\r\n\tat org.eclipse.jetty.server.Request.extractFormParameters(Request.java:599)\r\n\tat org.eclipse.jetty.server.Request.extractContentParameters(Request.java:546)\r\n\tat org.eclipse.jetty.server.Request.getParameters(Request.java:466)\r\n\t... 34 more\r\n<\/pre>\n<hr/><a href=\"https://eclipse.org/jetty\">Powered by Jetty:// 11.0.21<\/a><hr/>\n\n<\/body>\n<\/html>\n","transferId":"N/A","timestamp":"2025-11-14T02:27:38.698833300Z"}
+[2025-11-13 21:27:38] WARN  FileSharingApp - {"level":"WARN","message":"Attempt 1 failed: java.lang.IllegalStateException: Upload failed with status 400","transferId":"N/A","timestamp":"2025-11-14T02:27:38.702828700Z"}
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"UI_PROMPT","message":"Attempt 1 of 3 failed. Retrying in a moment...","transferId":"N/A","timestamp":"2025-11-14T02:27:38.704832600Z"}
+[2025-11-13 21:27:38] INFO  FileSharingApp - {"level":"INFO","message":"[Browser Prompt] Attempt 1 of 3 failed. Retrying in a moment...","transferId":"N/A","timestamp":"2025-11-14T02:27:38.708828600Z"}
+[2025-11-13 21:27:40] WARN  FileSharingApp - {"level":"WARN","message":"[Status] No progress for: http-be172b25bb22-1763087258584","transferId":"N/A","timestamp":"2025-11-14T02:27:40.730307Z"}
+[2025-11-13 21:27:40] INFO  FileSharingApp - {"level":"INFO","message":"🌐 [HTTP] File size=216, resumeFrom=0","transferId":"N/A","timestamp":"2025-11-14T02:27:40.734306400Z"}
+[2025-11-13 21:27:40] ERROR FileSharingApp - {"level":"ERROR","message":"❌ Upload failed: HTTP 400 → <html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=ISO-8859-1\"/>\n<title>Error 400 Unable to parse form content<\/title>\n<\/head>\n<body><h2>HTTP ERROR 400 Unable to parse form content<\/h2>\n<table>\n<tr><th>URI:<\/th><td>/upload<\/td><\/tr>\n<tr><th>STATUS:<\/th><td>400<\/td><\/tr>\n<tr><th>MESSAGE:<\/th><td>Unable to parse form content<\/td><\/tr>\n<tr><th>SERVLET:<\/th><td>com.filesharingapp.server.UploadServlet-40f70521<\/td><\/tr>\n<tr><th>CAUSED BY:<\/th><td>org.eclipse.jetty.http.BadMessageException: 400: Unable to parse form content<\/td><\/tr>\n<tr><th>CAUSED BY:<\/th><td>org.eclipse.jetty.util.Utf8Appendable$NotUtf8Exception: Not valid UTF8! byte Ab in state 0<\/td><\/tr>\n<\/table>\n<h3>Caused by:<\/h3><pre>org.eclipse.jetty.http.BadMessageException: 400: Unable to parse form content\r\n\tat org.eclipse.jetty.server.Request.getParameters(Request.java:471)\r\n\tat org.eclipse.jetty.server.Request.getParameter(Request.java:1049)\r\n\tat com.filesharingapp.server.UploadServlet.doPost(UploadServlet.java:39)\r\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:520)\r\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:587)\r\n\tat org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:764)\r\n\tat org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:529)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextHandle(ScopedHandler.java:221)\r\n\tat org.eclipse.jetty.server.session.SessionHandler.doHandle(SessionHandler.java:1580)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextHandle(ScopedHandler.java:221)\r\n\tat org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1381)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextScope(ScopedHandler.java:176)\r\n\tat org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:484)\r\n\tat org.eclipse.jetty.server.session.SessionHandler.doScope(SessionHandler.java:1553)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextScope(ScopedHandler.java:174)\r\n\tat org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1303)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:129)\r\n\tat org.eclipse.jetty.server.handler.HandlerList.handle(HandlerList.java:51)\r\n\tat org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:122)\r\n\tat org.eclipse.jetty.server.Server.handle(Server.java:563)\r\n\tat org.eclipse.jetty.server.HttpChannel$RequestDispatchable.dispatch(HttpChannel.java:1598)\r\n\tat org.eclipse.jetty.server.HttpChannel.dispatch(HttpChannel.java:753)\r\n\tat org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:501)\r\n\tat org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:287)\r\n\tat org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:314)\r\n\tat org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:100)\r\n\tat org.eclipse.jetty.io.SelectableChannelEndPoint$1.run(SelectableChannelEndPoint.java:53)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.runTask(AdaptiveExecutionStrategy.java:421)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.consumeTask(AdaptiveExecutionStrategy.java:390)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.tryProduce(AdaptiveExecutionStrategy.java:277)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.run(AdaptiveExecutionStrategy.java:199)\r\n\tat org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:411)\r\n\tat org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:969)\r\n\tat org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.doRunJob(QueuedThreadPool.java:1194)\r\n\tat org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:1149)\r\n\tat java.base/java.lang.Thread.run(Thread.java:840)\r\nCaused by: org.eclipse.jetty.util.Utf8Appendable$NotUtf8Exception: Not valid UTF8! byte Ab in state 0\r\n\tat org.eclipse.jetty.util.Utf8Appendable.appendByte(Utf8Appendable.java:249)\r\n\tat org.eclipse.jetty.util.Utf8Appendable.append(Utf8Appendable.java:151)\r\n\tat org.eclipse.jetty.util.UrlEncoded.decodeUtf8To(UrlEncoded.java:469)\r\n\tat org.eclipse.jetty.util.UrlEncoded.decodeTo(UrlEncoded.java:515)\r\n\tat org.eclipse.jetty.server.Request.extractFormParameters(Request.java:599)\r\n\tat org.eclipse.jetty.server.Request.extractContentParameters(Request.java:546)\r\n\tat org.eclipse.jetty.server.Request.getParameters(Request.java:466)\r\n\t... 35 more\r\n<\/pre>\n<hr/><a href=\"https://eclipse.org/jetty\">Powered by Jetty:// 11.0.21<\/a><hr/>\n\n<\/body>\n<\/html>\n","transferId":"N/A","timestamp":"2025-11-14T02:27:40.761007200Z"}
+[2025-11-13 21:27:40] WARN  FileSharingApp - {"level":"WARN","message":"Attempt 2 failed: java.lang.IllegalStateException: Upload failed with status 400","transferId":"N/A","timestamp":"2025-11-14T02:27:40.763023Z"}
+[2025-11-13 21:27:40] INFO  FileSharingApp - {"level":"UI_PROMPT","message":"Attempt 2 of 3 failed. Retrying in a moment...","transferId":"N/A","timestamp":"2025-11-14T02:27:40.765021Z"}
+[2025-11-13 21:27:40] INFO  FileSharingApp - {"level":"INFO","message":"[Browser Prompt] Attempt 2 of 3 failed. Retrying in a moment...","transferId":"N/A","timestamp":"2025-11-14T02:27:40.773472200Z"}
+[2025-11-13 21:27:42] WARN  FileSharingApp - {"level":"WARN","message":"[Status] No progress for: http-be172b25bb22-1763087258584","transferId":"N/A","timestamp":"2025-11-14T02:27:42.797947400Z"}
+[2025-11-13 21:27:42] INFO  FileSharingApp - {"level":"INFO","message":"🌐 [HTTP] File size=216, resumeFrom=0","transferId":"N/A","timestamp":"2025-11-14T02:27:42.802936900Z"}
+[2025-11-13 21:27:42] ERROR FileSharingApp - {"level":"ERROR","message":"❌ Upload failed: HTTP 400 → <html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html;charset=ISO-8859-1\"/>\n<title>Error 400 Unable to parse form content<\/title>\n<\/head>\n<body><h2>HTTP ERROR 400 Unable to parse form content<\/h2>\n<table>\n<tr><th>URI:<\/th><td>/upload<\/td><\/tr>\n<tr><th>STATUS:<\/th><td>400<\/td><\/tr>\n<tr><th>MESSAGE:<\/th><td>Unable to parse form content<\/td><\/tr>\n<tr><th>SERVLET:<\/th><td>com.filesharingapp.server.UploadServlet-40f70521<\/td><\/tr>\n<tr><th>CAUSED BY:<\/th><td>org.eclipse.jetty.http.BadMessageException: 400: Unable to parse form content<\/td><\/tr>\n<tr><th>CAUSED BY:<\/th><td>org.eclipse.jetty.util.Utf8Appendable$NotUtf8Exception: Not valid UTF8! byte Ab in state 0<\/td><\/tr>\n<\/table>\n<h3>Caused by:<\/h3><pre>org.eclipse.jetty.http.BadMessageException: 400: Unable to parse form content\r\n\tat org.eclipse.jetty.server.Request.getParameters(Request.java:471)\r\n\tat org.eclipse.jetty.server.Request.getParameter(Request.java:1049)\r\n\tat com.filesharingapp.server.UploadServlet.doPost(UploadServlet.java:39)\r\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:520)\r\n\tat jakarta.servlet.http.HttpServlet.service(HttpServlet.java:587)\r\n\tat org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:764)\r\n\tat org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:529)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextHandle(ScopedHandler.java:221)\r\n\tat org.eclipse.jetty.server.session.SessionHandler.doHandle(SessionHandler.java:1580)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextHandle(ScopedHandler.java:221)\r\n\tat org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1381)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextScope(ScopedHandler.java:176)\r\n\tat org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:484)\r\n\tat org.eclipse.jetty.server.session.SessionHandler.doScope(SessionHandler.java:1553)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.nextScope(ScopedHandler.java:174)\r\n\tat org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:1303)\r\n\tat org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:129)\r\n\tat org.eclipse.jetty.server.handler.HandlerList.handle(HandlerList.java:51)\r\n\tat org.eclipse.jetty.server.handler.HandlerWrapper.handle(HandlerWrapper.java:122)\r\n\tat org.eclipse.jetty.server.Server.handle(Server.java:563)\r\n\tat org.eclipse.jetty.server.HttpChannel$RequestDispatchable.dispatch(HttpChannel.java:1598)\r\n\tat org.eclipse.jetty.server.HttpChannel.dispatch(HttpChannel.java:753)\r\n\tat org.eclipse.jetty.server.HttpChannel.handle(HttpChannel.java:501)\r\n\tat org.eclipse.jetty.server.HttpConnection.onFillable(HttpConnection.java:287)\r\n\tat org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:314)\r\n\tat org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:100)\r\n\tat org.eclipse.jetty.io.SelectableChannelEndPoint$1.run(SelectableChannelEndPoint.java:53)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.runTask(AdaptiveExecutionStrategy.java:421)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.consumeTask(AdaptiveExecutionStrategy.java:390)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.tryProduce(AdaptiveExecutionStrategy.java:277)\r\n\tat org.eclipse.jetty.util.thread.strategy.AdaptiveExecutionStrategy.run(AdaptiveExecutionStrategy.java:199)\r\n\tat org.eclipse.jetty.util.thread.ReservedThreadExecutor$ReservedThread.run(ReservedThreadExecutor.java:411)\r\n\tat org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:969)\r\n\tat org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.doRunJob(QueuedThreadPool.java:1194)\r\n\tat org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:1149)\r\n\tat java.base/java.lang.Thread.run(Thread.java:840)\r\nCaused by: org.eclipse.jetty.util.Utf8Appendable$NotUtf8Exception: Not valid UTF8! byte Ab in state 0\r\n\tat org.eclipse.jetty.util.Utf8Appendable.appendByte(Utf8Appendable.java:249)\r\n\tat org.eclipse.jetty.util.Utf8Appendable.append(Utf8Appendable.java:151)\r\n\tat org.eclipse.jetty.util.UrlEncoded.decodeUtf8To(UrlEncoded.java:469)\r\n\tat org.eclipse.jetty.util.UrlEncoded.decodeTo(UrlEncoded.java:515)\r\n\tat org.eclipse.jetty.server.Request.extractFormParameters(Request.java:599)\r\n\tat org.eclipse.jetty.server.Request.extractContentParameters(Request.java:546)\r\n\tat org.eclipse.jetty.server.Request.getParameters(Request.java:466)\r\n\t... 35 more\r\n<\/pre>\n<hr/><a href=\"https://eclipse.org/jetty\">Powered by Jetty:// 11.0.21<\/a><hr/>\n\n<\/body>\n<\/html>\n","transferId":"N/A","timestamp":"2025-11-14T02:27:42.816934Z"}
+[2025-11-13 21:27:42] WARN  FileSharingApp - {"level":"WARN","message":"Attempt 3 failed: java.lang.IllegalStateException: Upload failed with status 400","transferId":"N/A","timestamp":"2025-11-14T02:27:42.819933600Z"}
+[2025-11-13 21:27:42] INFO  FileSharingApp - {"level":"UI_PROMPT","message":"Attempt 3 of 3 failed. Retrying in a moment...","transferId":"N/A","timestamp":"2025-11-14T02:27:42.820939600Z"}
+[2025-11-13 21:27:42] INFO  FileSharingApp - {"level":"INFO","message":"[Browser Prompt] Attempt 3 of 3 failed. Retrying in a moment...","transferId":"N/A","timestamp":"2025-11-14T02:27:42.827207100Z"}
+[2025-11-13 21:27:42] ERROR FileSharingApp - {"level":"ERROR","message":"All retry attempts failed","transferId":"N/A","timestamp":"2025-11-14T02:27:42.829212100Z"}
+java.lang.RuntimeException: java.lang.IllegalStateException: Upload failed with status 400
+	at com.filesharingapp.transfer.HttpTransferHandler.lambda$uploadWithResume$0(HttpTransferHandler.java:67) ~[classes/:?]
+	at com.filesharingapp.utils.RetryUtil.runWithRetry(RetryUtil.java:33) ~[classes/:?]
+	at com.filesharingapp.utils.RetryUtil.runWithRetry(RetryUtil.java:25) ~[classes/:?]
+	at com.filesharingapp.transfer.HttpTransferHandler.uploadWithResume(HttpTransferHandler.java:63) ~[classes/:?]
+	at com.filesharingapp.transfer.HttpTransferService.send(HttpTransferService.java:89) ~[classes/:?]
+	at com.filesharingapp.core.Sender.runInteractive(Sender.java:167) ~[classes/:?]
+	at com.filesharingapp.tests.E2ETransferTest.testFileTransferSuccess(E2ETransferTest.java:44) ~[test-classes/:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[?:?]
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134) ~[testng-7.10.2.jar:7.10.2]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511) [?:?]
+	at org.testng.TestRunner.privateRun(TestRunner.java:739) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestRunner.run(TestRunner.java:614) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:421) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:413) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:373) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.run(SuiteRunner.java:312) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1274) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1208) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuites(TestNG.java:1112) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.run(TestNG.java:1079) [testng-7.10.2.jar:7.10.2]
+	at com.intellij.rt.testng.IDEARemoteTestNG.run(IDEARemoteTestNG.java:65) [testng-rt.jar:?]
+	at com.intellij.rt.testng.RemoteTestNGStarter.main(RemoteTestNGStarter.java:105) [testng-rt.jar:?]
+Caused by: java.lang.IllegalStateException: Upload failed with status 400
+	at com.filesharingapp.transfer.HttpTransferHandler.doUploadOnce(HttpTransferHandler.java:160) ~[classes/:?]
+	at com.filesharingapp.transfer.HttpTransferHandler.lambda$uploadWithResume$0(HttpTransferHandler.java:65) ~[classes/:?]
+	... 33 more
+[2025-11-13 21:27:42] ERROR FileSharingApp - {"level":"ERROR","message":"Sender UI flow failed","transferId":"N/A","timestamp":"2025-11-14T02:27:42.852871600Z"}
+java.lang.IllegalStateException: HTTP upload failed after retries
+	at com.filesharingapp.transfer.HttpTransferHandler.uploadWithResume(HttpTransferHandler.java:71) ~[classes/:?]
+	at com.filesharingapp.transfer.HttpTransferService.send(HttpTransferService.java:89) ~[classes/:?]
+	at com.filesharingapp.core.Sender.runInteractive(Sender.java:167) ~[classes/:?]
+	at com.filesharingapp.tests.E2ETransferTest.testFileTransferSuccess(E2ETransferTest.java:44) ~[test-classes/:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[?:?]
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:686) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:992) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestInvoker.invokeTestMethods(TestInvoker.java:203) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:154) ~[testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.TestMethodWorker.run(TestMethodWorker.java:134) ~[testng-7.10.2.jar:7.10.2]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511) [?:?]
+	at org.testng.TestRunner.privateRun(TestRunner.java:739) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestRunner.run(TestRunner.java:614) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:421) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:413) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:373) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.run(SuiteRunner.java:312) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1274) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1208) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuites(TestNG.java:1112) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.run(TestNG.java:1079) [testng-7.10.2.jar:7.10.2]
+	at com.intellij.rt.testng.IDEARemoteTestNG.run(IDEARemoteTestNG.java:65) [testng-rt.jar:?]
+	at com.intellij.rt.testng.RemoteTestNGStarter.main(RemoteTestNGStarter.java:105) [testng-rt.jar:?]
+[2025-11-13 21:27:42] INFO  FileSharingApp - {"level":"SUCCESS","message":"Receiver mode selected.","transferId":"N/A","timestamp":"2025-11-14T02:27:42.873060900Z"}
+[2025-11-13 21:27:42] INFO  FileSharingApp - {"level":"INFO","message":"[Receiver] User: TestUser | Mode: HTTP","transferId":"N/A","timestamp":"2025-11-14T02:27:42.874019200Z"}
+[2025-11-13 21:27:42] INFO  FileSharingApp - {"level":"INFO","message":"[Factory] Using HTTP transfer service.","transferId":"N/A","timestamp":"2025-11-14T02:27:42.874019200Z"}
+[2025-11-13 21:27:42] INFO  FileSharingApp - {"level":"INFO","message":"Where should we save the incoming file? (enter folder path, or blank for Downloads)","transferId":"N/A","timestamp":"2025-11-14T02:27:42.875015300Z"}
+[2025-11-13 21:32:24] INFO  FileSharingApp - {"level":"INFO","message":"Welcome to FileSharingApp! (Console)","transferId":"N/A","timestamp":"2025-11-14T02:32:24.020241800Z"}
+[2025-11-13 21:32:24] INFO  FileSharingApp - {"level":"INFO","message":"Type carefully. If stuck, type 'help'.","transferId":"N/A","timestamp":"2025-11-14T02:32:24.026248800Z"}
+[2025-11-13 21:32:24] INFO  FileSharingApp - {"level":"INFO","message":"What is your session name? (any simple word is OK)","transferId":"N/A","timestamp":"2025-11-14T02:32:24.027247300Z"}
+[2025-11-13 21:38:49] INFO  FileSharingApp - {"level":"INFO","message":"✅ Loaded application.properties","transferId":"N/A","timestamp":"2025-11-14T02:38:49.823324Z"}
+[2025-11-13 21:38:50] INFO  FileSharingApp - {"level":"SUCCESS","message":"[FileSharingServer] Running at http://localhost:8080","transferId":"N/A","timestamp":"2025-11-14T02:38:50.249705400Z"}
+[2025-11-13 21:38:50] INFO  FileSharingApp - {"level":"INFO","message":"🌐 Application running at: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-14T02:38:50.251702400Z"}
+[2025-11-13 21:38:50] INFO  FileSharingApp - {"level":"UI_PROMPT","message":"INFO: Web UI available at: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-14T02:38:50.253707400Z"}
+[2025-11-13 21:38:50] INFO  FileSharingApp - {"level":"INFO","message":"[Browser Prompt] INFO: Web UI available at: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-14T02:38:50.349013400Z"}
+[2025-11-13 21:38:50] INFO  FileSharingApp - {"level":"SUCCESS","message":"🔎 Browser opened: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-14T02:38:50.948413400Z"}

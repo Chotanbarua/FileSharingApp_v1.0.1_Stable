@@ -1,108 +1,144 @@
 package com.filesharingapp.core;
 
+import com.filesharingapp.transfer.TargetConfig;
 import com.filesharingapp.transfer.TransferFactory;
 import com.filesharingapp.transfer.TransferMethod;
-import com.filesharingapp.utils.HashUtil;
 import com.filesharingapp.utils.LoggerUtil;
-import com.filesharingapp.utils.NetworkUtil;
+import com.filesharingapp.utils.ValidationUtil;
+import com.filesharingapp.utils.ValidationMessages; // FIX: Added missing import
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Scanner;
 
 /**
  * Receiver
  * --------
- * Handles incoming transfer operations and integrity verification.
+ * Baby-English:
+ * - This class helps the person who is getting the file.
+ * - It orchestrates the receive process, including the crucial resume check.
  */
 public class Receiver {
 
+    /** The active transfer handler (HTTP / ZeroTier / S3). */
     private TransferMethod currentTransferHandler;
 
-    public void runInteractive() {
-        try (Scanner in = new Scanner(System.in)) {
-            LoggerUtil.info("✅ Receiver mode initialized.");
+    // Default save path
+    private static final String DEFAULT_SAVE_PATH = System.getProperty("user.home") + File.separator + "Downloads";
 
-            LoggerUtil.info("Sender is using which transport? (HTTP / ZeroTier / S3)");
-            String method = in.nextLine().trim();
-            currentTransferHandler = TransferFactory.create(method);
 
+    /**
+     * Start the interactive receiver flow (console or UI-driven).
+     *
+     * @param userName    name of the person using the app
+     * @param config      TargetConfig from UI/Console (only mode is relevant for Receiver)
+     */
+    public void runInteractive(String userName, TargetConfig config) {
+        // Use a single Scanner for interactive console input (e.g., resume prompt)
+        Scanner in = new Scanner(System.in);
+
+        try {
+            // -------------------------------
+            // 1) Say hello and log who we are
+            // -------------------------------
+            LoggerUtil.success(PromptManager.RECEIVER_INIT_OK, null);
+            LoggerUtil.info("[Receiver] User: " + userName + " | Mode: " + config.getMode(), null);
+            TransferContext.setActiveMethod(config.getMode());
+
+            // -------------------------------
+            // 2) Create transfer handler
+            // -------------------------------
+            currentTransferHandler = TransferFactory.create(config.getMode());
             if (currentTransferHandler == null) {
-                LoggerUtil.error("❌ Invalid or unsupported method: " + method);
+                LoggerUtil.error("❌ No transfer handler available for mode: " + config.getMode(), null, null);
                 return;
             }
 
-            LoggerUtil.info("Please enter the Sender’s IP or download URL:");
-            String senderHost = in.nextLine().trim();
+            // -------------------------------
+            // 3) Ask where to save file
+            // -------------------------------
+            String saveFolder = askSaveFolder(in);
+            if (saveFolder == null) return;
 
-            LoggerUtil.info("Enter port number (default 8080):");
-            int senderPort = Integer.parseInt(in.nextLine().trim());
+            // -------------------------------
+            // 4) Perform handshake (get metadata: name, size, checksum)
+            // -------------------------------
+            // Note: Handshake implementation is currently a stub in services.
+            currentTransferHandler.handshake();
+            LoggerUtil.info("Handshake complete. Incoming file: " + TransferContext.getIncomingName(), null);
 
-            // --- Connectivity check & retry loop ---
-            LoggerUtil.info(PromptManager.TRYING_REACH);
-            int max = 3;
-            boolean ok = false;
-            for (int i = 1; i <= max; i++) {
-                if (NetworkUtil.pingReceiver(senderHost, senderPort)) {
-                    LoggerUtil.info(PromptManager.NETWORK_PING_SUCCESS);
-                    ok = true;
-                    break;
-                }
-                LoggerUtil.warn(PromptManager.retrying(i, max));
-                if (i == max) {
-                    LoggerUtil.error(PromptManager.RETRY_GIVEUP);
-                    return;
-                }
-                Thread.sleep(1000L);
-            }
-            if (!ok) return;
+            // -------------------------------
+            // 5) Resume check (critical BRD requirement)
+            // -------------------------------
+            checkAndSetResumeOffset(in, saveFolder);
 
-            // --- Ask where to save the incoming file(s) ---
-            LoggerUtil.info(PromptManager.ASK_SAVE_FOLDER);
-            String path = in.nextLine().trim();
-            if (path.isEmpty()) path = System.getProperty("user.home") + File.separator + "Downloads";
-            File saveDir = new File(path);
-            if (!saveDir.exists() && !saveDir.mkdirs()) {
-                LoggerUtil.warn(PromptManager.PERMISSION_DENIED);
-                return;
-            }
-            if (!saveDir.canWrite()) {
-                LoggerUtil.warn(PromptManager.PERMISSION_DENIED);
-                return;
-            }
-            LoggerUtil.info(PromptManager.FREE_SPACE_OK);
+            // -------------------------------
+            // 6) Call transfer engine
+            // -------------------------------
+            LoggerUtil.info(PromptManager.RECEIVER_READY, null);
+            currentTransferHandler.receive(saveFolder);
 
-            // --- Log incoming metadata ---
-            String incomingName = TransferContext.getIncomingName();
-            String expectedChecksum = TransferContext.getExpectedChecksum();
-            LoggerUtil.info("Incoming file: " + incomingName + " | Expected checksum: " + expectedChecksum);
-
-            // --- Perform actual receive ---
-            currentTransferHandler.receive(saveDir.getAbsolutePath());
-
-            // --- After file download completes ---
-            File downloaded = new File(saveDir, incomingName != null ? incomingName : "received_file.tmp");
-            try {
-                verifyChecksumWithRetry(downloaded, expectedChecksum);
-            } catch (Exception ex) {
-                LoggerUtil.error(PromptManager.VERIFY_FAIL, ex);
-                return;
-            }
-            LoggerUtil.info(PromptManager.VERIFY_OK);
-            LoggerUtil.success("🎉 File received successfully at " + saveDir);
+            // -------------------------------
+            // 7) Goodbye message
+            // -------------------------------
+            LoggerUtil.success(PromptManager.UI_TRANSFER_DONE, null);
 
         } catch (Exception e) {
-            LoggerUtil.error("Receiver failed", e);
+            LoggerUtil.error("Receiver flow failed", e, null);
         }
     }
 
-    private static void verifyChecksumWithRetry(File file, String expected) throws Exception {
-        if (expected == null || expected.isBlank()) {
-            LoggerUtil.warn("⚠️ No checksum provided by sender, skipping verification.");
-            return;
+    // ============================================
+    // Check for partial file and set offset
+    // ============================================
+    private void checkAndSetResumeOffset(Scanner in, String saveFolder) {
+        String fileName = TransferContext.getIncomingName();
+        if (fileName == null || fileName.isBlank()) return;
+
+        Path partialPath = Path.of(saveFolder, fileName);
+        File partialFile = partialPath.toFile();
+
+        if (partialFile.exists() && partialFile.isFile() && partialFile.length() > 0) {
+            long currentSize = partialFile.length();
+            LoggerUtil.warn("Partial file found: " + fileName + " (" + currentSize + " bytes)", null);
+
+            LoggerUtil.info(PromptManager.RESUME_FOUND, null);
+
+            // Prompt user for console input (or assume 'Y' for UI automation)
+            String answer = in.nextLine().trim().toUpperCase(Locale.ROOT);
+
+            if ("Y".equals(answer)) {
+                TransferContext.setResumeOffsetBytes(currentSize);
+                LoggerUtil.success("Resuming download from offset: " + currentSize, null);
+            } else {
+                TransferContext.deletePartialFile(partialPath.toString());
+                TransferContext.setResumeOffsetBytes(0);
+                LoggerUtil.info("Partial file deleted. Starting new transfer.", null);
+            }
         }
-        String actual = HashUtil.sha256Hex(file);
-        if (!actual.equalsIgnoreCase(expected))
-            throw new Exception("Checksum mismatch: " + actual + " ≠ " + expected);
+    }
+
+
+    // ============================================
+    // Ask save folder and validate
+    // ============================================
+    private String askSaveFolder(Scanner in) {
+        // Use console prompt if running interactively
+        LoggerUtil.info(PromptManager.RECEIVER_CHOOSE_FOLDER, null);
+        String path = in.nextLine().trim();
+
+        if (path.isEmpty()) {
+            path = DEFAULT_SAVE_PATH;
+        }
+
+        String validationError = ValidationUtil.validateFolder(path);
+        if (validationError != null) {
+            LoggerUtil.warn(validationError, null);
+            return null;
+        }
+
+        LoggerUtil.info("Save folder OK: " + path, null);
+        return path;
     }
 }

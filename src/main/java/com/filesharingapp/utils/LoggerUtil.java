@@ -2,63 +2,136 @@ package com.filesharingapp.utils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Unified Logger wrapper using Log4j2 + console mirror.
+ * LoggerUtil
+ * ----------
+ * Baby English:
+ * - This class is our one-stop shop for logging.
+ * - **FIXED:** Simplified error overloads to remove ambiguity.
  */
 public final class LoggerUtil {
+
     private static final Logger logger = LogManager.getLogger("FileSharingApp");
+    private static final int MAX_LOGS_PER_SECOND = 50;
+    private static final AtomicInteger logCounter = new AtomicInteger(0);
+    private static long currentSecond = Instant.now().getEpochSecond();
 
     private LoggerUtil() {}
 
-    public static void info(String msg) {
-        logger.info(msg);
-        System.out.println("[INFO] " + msg);
+    // ============================================================
+    // 1️⃣ Simple Overloads (Used when transferId is unknown/optional)
+    // ============================================================
+
+    public static void info(String msg) { info(msg, null); }
+    public static void success(String msg) { success(msg, null); }
+    public static void warn(String msg) { warn(msg, null); }
+
+    // Primary error methods
+    public static void error(String msg) { error(msg, null, null); }
+    public static void error(String msg, Throwable t) { error(msg, t, null); }
+
+
+    // ============================================================
+    // 2️⃣ Primary Methods (With transferId context)
+    // ============================================================
+
+    public static void info(String msg, String transferId) {
+        if (!canLog() || msg == null) return;
+        logger.info(buildJson("INFO", msg, transferId));
     }
 
-    public static void success(String msg) {
-        logger.info("[SUCCESS] " + msg);
-        System.out.println("[SUCCESS] " + msg);
+    public static void success(String msg, String transferId) {
+        if (!canLog() || msg == null) return;
+        logger.info(buildJson("SUCCESS", msg, transferId));
     }
 
-    public static void warn(String msg) {
-        logger.warn(msg);
-        System.out.println("[WARN] " + msg);
-    }
-
-    public static void error(String msg) {
-        logger.error(msg);
-        System.err.println("[ERROR] " + msg);
-    }
-
-    public static void error(String msg, Throwable t) {
-        logger.error(msg, t);
-        System.err.println("[ERROR] " + msg);
-        if (t != null) t.printStackTrace(System.err);
+    public static void warn(String msg, String transferId) {
+        if (!canLog() || msg == null) return;
+        logger.warn(buildJson("WARN", msg, transferId));
     }
 
     /**
-     * Display a prompt message on the Web UI (if running with the web frontend).
-     * Falls back to console if no browser context is active.
+     * error with stack trace
      */
-    public static void uiPrompt(String message) {
+    public static void error(String msg, Throwable t, String transferId) {
+        if (!canLog()) return;
+        if (msg == null) msg = "Unexpected error";
+        logger.error(buildJson("ERROR", msg, transferId), t);
+    }
+
+    // Helper to log without stack trace
+    public static void error(String msg, String transferId) {
+        error(msg, null, transferId);
+    }
+
+    /**
+     * uiPrompt
+     */
+    public static void uiPrompt(String message, String transferId) {
+        if (!canLog() || message == null || message.isBlank()) return;
+
+        String safeMessage = maskSensitive(message);
+        logger.info(buildJson("UI_PROMPT", safeMessage, transferId));
+
         try {
-            // If the Web UI is active (FileSharingServer already started)
-            System.out.println("[UI PROMPT] " + message);
+            String encoded = URLEncoder.encode(safeMessage, StandardCharsets.UTF_8.name());
+            int port = AppConfig.getInt("app.http.port", 8080);
+            String urlStr = "http://localhost:" + port + "/prompt?msg=" + encoded;
 
-            // Optional: also push to browser via a simple endpoint or WebSocket
-            // This lightweight POST will not break if the UI isn’t listening.
-            try {
-                var url = new java.net.URL("http://localhost:8080/prompt?msg=" + java.net.URLEncoder.encode(message, "UTF-8"));
-                var conn = (java.net.HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(500);
-                conn.getResponseCode(); // trigger
-                conn.disconnect();
-            } catch (Exception ignored) { }
-
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(500);
+            conn.setReadTimeout(500);
+            conn.getResponseCode();
+            conn.disconnect();
         } catch (Exception e) {
-            System.out.println("[PromptManager fallback] " + message);
+            logger.warn(buildJson("WARN", "uiPrompt HTTP forward failed: " + e.getMessage(), transferId));
         }
     }
 
+    /**
+     * buildJson
+     */
+    private static String buildJson(String level, String msg, String transferId) {
+        JSONObject json = new JSONObject();
+        json.put("level", level);
+        json.put("message", maskSensitive(msg));
+        json.put("transferId", transferId == null ? "N/A" : transferId);
+        json.put("timestamp", Instant.now().toString());
+        return json.toString();
+    }
+
+    /**
+     * maskSensitive
+     */
+    private static String maskSensitive(String msg) {
+        if (msg == null) return null;
+        String masked = msg;
+        // ... (Masking regex remains the same)
+        masked = masked.replaceAll("(?i)(secret\\s*[:=]\\s*)([^\\s]+)", "$1****MASKED****");
+        masked = masked.replaceAll("(?i)(password\\s*[:=]\\s*)([^\\s]+)", "$1****MASKED****");
+        masked = masked.replaceAll("(?i)(aws[_-]?secret[_-]?access[_-]?key\\s*[:=]\\s*)([^\\s]+)", "$1****MASKED****");
+        return masked;
+    }
+
+    /**
+     * canLog
+     */
+    private static boolean canLog() {
+        long now = Instant.now().getEpochSecond();
+        if (now != currentSecond) {
+            currentSecond = now;
+            logCounter.set(0);
+        }
+        return logCounter.incrementAndGet() <= MAX_LOGS_PER_SECOND;
+    }
 }

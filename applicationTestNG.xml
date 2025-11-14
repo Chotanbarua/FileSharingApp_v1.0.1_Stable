@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="FileSharingAppTestSuite" verbose="1">
+    <test name="EndToEndTransferTests">
+        <classes>
+            <class name="com.filesharingapp.tests.E2ETransferTest"/>
+        </classes>
+    </test>
+</suite>
