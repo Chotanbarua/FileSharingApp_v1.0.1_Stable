@@ -271,3 +271,206 @@ java.lang.IllegalStateException: HTTP upload failed after retries
 [2025-11-13 21:38:50] INFO  FileSharingApp - {"level":"UI_PROMPT","message":"INFO: Web UI available at: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-14T02:38:50.253707400Z"}
 [2025-11-13 21:38:50] INFO  FileSharingApp - {"level":"INFO","message":"[Browser Prompt] INFO: Web UI available at: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-14T02:38:50.349013400Z"}
 [2025-11-13 21:38:50] INFO  FileSharingApp - {"level":"SUCCESS","message":"🔎 Browser opened: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-14T02:38:50.948413400Z"}
+[2025-11-15 12:58:50] INFO  FileSharingApp - {"level":"INFO","message":"? Loaded application.properties","transferId":"N/A","timestamp":"2025-11-15T17:58:50.166553800Z"}
+[2025-11-15 12:58:50] ERROR FileSharingApp - {"level":"ERROR","message":"Failed to start Jetty server","transferId":"N/A","timestamp":"2025-11-15T17:58:50.932315900Z"}
+java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:8080
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:344) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:304) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.Server.lambda$doStart$0(Server.java:402) ~[jetty-server-11.0.21.jar:11.0.21]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179) ~[?:?]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:992) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596) ~[?:?]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:398) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93) ~[jetty-util-11.0.21.jar:11.0.21]
+	at com.filesharingapp.server.FileSharingServer.startSharedServer(FileSharingServer.java:105) [classes/:?]
+	at com.filesharingapp.tests.BaseTest.setupSuite(BaseTest.java:18) [test-classes/:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141) [testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethodConsideringTimeout(MethodInvocationHelper.java:71) [testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.ConfigInvoker.invokeConfigurationMethod(ConfigInvoker.java:400) [testng-7.10.2.jar:7.10.2]
+	at org.testng.internal.invokers.ConfigInvoker.invokeConfigurations(ConfigInvoker.java:333) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:358) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunner.run(SuiteRunner.java:312) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52) [testng-7.10.2.jar:7.10.2]
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:95) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1274) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1208) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.runSuites(TestNG.java:1112) [testng-7.10.2.jar:7.10.2]
+	at org.testng.TestNG.run(TestNG.java:1079) [testng-7.10.2.jar:7.10.2]
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:155) [surefire-testng-3.3.0.jar:3.3.0]
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:169) [surefire-testng-3.3.0.jar:3.3.0]
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:88) [surefire-testng-3.3.0.jar:3.3.0]
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:137) [surefire-testng-3.3.0.jar:3.3.0]
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385) [surefire-booter-3.3.0.jar:3.3.0]
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162) [surefire-booter-3.3.0.jar:3.3.0]
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507) [surefire-booter-3.3.0.jar:3.3.0]
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495) [surefire-booter-3.3.0.jar:3.3.0]
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.bind(Net.java:555) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.netBind(ServerSocketChannelImpl.java:337) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:294) ~[?:?]
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:339) ~[jetty-server-11.0.21.jar:11.0.21]
+	... 40 more
+[2025-11-15 13:02:34] INFO  FileSharingApp - {"level":"INFO","message":"✅ Loaded application.properties","transferId":"N/A","timestamp":"2025-11-15T18:02:34.571147100Z"}
+[2025-11-15 13:02:34] ERROR FileSharingApp - {"level":"ERROR","message":"Failed to start Jetty server","transferId":"N/A","timestamp":"2025-11-15T18:02:34.885448300Z"}
+java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:8080
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:344) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:304) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.Server.lambda$doStart$0(Server.java:402) ~[jetty-server-11.0.21.jar:11.0.21]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179) ~[?:?]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:992) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596) ~[?:?]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:398) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93) ~[jetty-util-11.0.21.jar:11.0.21]
+	at com.filesharingapp.server.FileSharingServer.startSharedServer(FileSharingServer.java:105) [classes/:?]
+	at com.filesharingapp.ui.WebLauncher.launchWebUI(WebLauncher.java:40) [classes/:?]
+	at com.filesharingapp.ui.WebLauncher.main(WebLauncher.java:25) [classes/:?]
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.bind(Net.java:555) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.netBind(ServerSocketChannelImpl.java:337) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:294) ~[?:?]
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:339) ~[jetty-server-11.0.21.jar:11.0.21]
+	... 17 more
+[2025-11-15 13:06:47] INFO  FileSharingApp - {"level":"INFO","message":"✅ Loaded application.properties","transferId":"N/A","timestamp":"2025-11-15T18:06:47.454655500Z"}
+[2025-11-15 13:06:47] ERROR FileSharingApp - {"level":"ERROR","message":"Failed to start Jetty server","transferId":"N/A","timestamp":"2025-11-15T18:06:47.775366600Z"}
+java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:8080
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:344) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:304) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.Server.lambda$doStart$0(Server.java:402) ~[jetty-server-11.0.21.jar:11.0.21]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179) ~[?:?]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:992) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596) ~[?:?]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:398) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93) ~[jetty-util-11.0.21.jar:11.0.21]
+	at com.filesharingapp.server.FileSharingServer.startSharedServer(FileSharingServer.java:105) [classes/:?]
+	at com.filesharingapp.ui.WebLauncher.launchWebUI(WebLauncher.java:40) [classes/:?]
+	at com.filesharingapp.ui.WebLauncher.main(WebLauncher.java:25) [classes/:?]
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.bind(Net.java:555) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.netBind(ServerSocketChannelImpl.java:337) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:294) ~[?:?]
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:339) ~[jetty-server-11.0.21.jar:11.0.21]
+	... 17 more
+[2025-11-15 13:09:28] INFO  FileSharingApp - {"level":"INFO","message":"✅ Loaded application.properties","transferId":"N/A","timestamp":"2025-11-15T18:09:28.409279400Z"}
+[2025-11-15 13:09:28] ERROR FileSharingApp - {"level":"ERROR","message":"Failed to start Jetty server","transferId":"N/A","timestamp":"2025-11-15T18:09:28.805211Z"}
+java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:8080
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:344) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:304) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.Server.lambda$doStart$0(Server.java:402) ~[jetty-server-11.0.21.jar:11.0.21]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179) ~[?:?]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:992) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596) ~[?:?]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:398) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93) ~[jetty-util-11.0.21.jar:11.0.21]
+	at com.filesharingapp.server.FileSharingServer.startSharedServer(FileSharingServer.java:105) [classes/:?]
+	at com.filesharingapp.ui.WebLauncher.launchWebUI(WebLauncher.java:40) [classes/:?]
+	at com.filesharingapp.ui.WebLauncher.main(WebLauncher.java:25) [classes/:?]
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.bind(Net.java:555) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.netBind(ServerSocketChannelImpl.java:337) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:294) ~[?:?]
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:339) ~[jetty-server-11.0.21.jar:11.0.21]
+	... 17 more
+[2025-11-15 13:24:58] INFO  FileSharingApp - {"level":"INFO","message":"✅ Loaded application.properties","transferId":"N/A","timestamp":"2025-11-15T18:24:58.494252Z"}
+[2025-11-15 13:24:58] ERROR FileSharingApp - {"level":"ERROR","message":"Failed to start Jetty server","transferId":"N/A","timestamp":"2025-11-15T18:24:58.821552900Z"}
+java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:8080
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:344) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:304) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.Server.lambda$doStart$0(Server.java:402) ~[jetty-server-11.0.21.jar:11.0.21]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179) ~[?:?]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:992) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596) ~[?:?]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:398) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93) ~[jetty-util-11.0.21.jar:11.0.21]
+	at com.filesharingapp.server.FileSharingServer.startSharedServer(FileSharingServer.java:105) [classes/:?]
+	at com.filesharingapp.ui.WebLauncher.launchWebUI(WebLauncher.java:40) [classes/:?]
+	at com.filesharingapp.ui.WebLauncher.main(WebLauncher.java:25) [classes/:?]
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.bind(Net.java:555) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.netBind(ServerSocketChannelImpl.java:337) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:294) ~[?:?]
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:339) ~[jetty-server-11.0.21.jar:11.0.21]
+	... 17 more
+[2025-11-15 13:27:26] INFO  FileSharingApp - {"level":"INFO","message":"✅ Loaded application.properties","transferId":"N/A","timestamp":"2025-11-15T18:27:26.007336200Z"}
+[2025-11-15 13:27:26] ERROR FileSharingApp - {"level":"ERROR","message":"Failed to start Jetty server","transferId":"N/A","timestamp":"2025-11-15T18:27:26.339480800Z"}
+java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:8080
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:344) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:304) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.server.Server.lambda$doStart$0(Server.java:402) ~[jetty-server-11.0.21.jar:11.0.21]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179) ~[?:?]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:992) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150) ~[?:?]
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173) ~[?:?]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234) ~[?:?]
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596) ~[?:?]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:398) ~[jetty-server-11.0.21.jar:11.0.21]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:93) ~[jetty-util-11.0.21.jar:11.0.21]
+	at com.filesharingapp.server.FileSharingServer.startSharedServer(FileSharingServer.java:105) [classes/:?]
+	at com.filesharingapp.ui.WebLauncher.launchWebUI(WebLauncher.java:40) [classes/:?]
+	at com.filesharingapp.ui.WebLauncher.main(WebLauncher.java:25) [classes/:?]
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.bind(Net.java:555) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.netBind(ServerSocketChannelImpl.java:337) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:294) ~[?:?]
+	at org.eclipse.jetty.server.ServerConnector.openAcceptChannel(ServerConnector.java:339) ~[jetty-server-11.0.21.jar:11.0.21]
+	... 17 more
+[2025-11-15 13:30:09] INFO  FileSharingApp - {"level":"INFO","message":"✅ Loaded application.properties","transferId":"N/A","timestamp":"2025-11-15T18:30:09.621625700Z"}
+[2025-11-15 13:30:10] INFO  FileSharingApp - {"level":"SUCCESS","message":"[FileSharingServer] Running at http://localhost:8080","transferId":"N/A","timestamp":"2025-11-15T18:30:10.551293300Z"}
+[2025-11-15 13:30:10] INFO  FileSharingApp - {"level":"INFO","message":"🌐 Application running at: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-15T18:30:10.553287700Z"}
+[2025-11-15 13:30:10] INFO  FileSharingApp - {"level":"UI_PROMPT","message":"INFO: Web UI available at: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-15T18:30:10.558275Z"}
+[2025-11-15 13:30:11] INFO  FileSharingApp - {"level":"INFO","message":"[Browser Prompt] INFO: Web UI available at: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-15T18:30:11.018591800Z"}
+[2025-11-15 13:30:11] INFO  FileSharingApp - {"level":"SUCCESS","message":"🔎 Browser opened: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-15T18:30:11.825978900Z"}
+[2025-11-15 13:58:25] INFO  FileSharingApp - {"level":"INFO","message":"✅ Loaded application.properties","transferId":"N/A","timestamp":"2025-11-15T18:58:25.041599100Z"}
+[2025-11-15 13:58:25] INFO  FileSharingApp - {"level":"SUCCESS","message":"[FileSharingServer] Running at http://localhost:8080","transferId":"N/A","timestamp":"2025-11-15T18:58:25.688091100Z"}
+[2025-11-15 13:58:25] INFO  FileSharingApp - {"level":"INFO","message":"🌐 Application running at: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-15T18:58:25.690125Z"}
+[2025-11-15 13:58:25] INFO  FileSharingApp - {"level":"UI_PROMPT","message":"INFO: Web UI available at: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-15T18:58:25.698104600Z"}
+[2025-11-15 13:58:25] INFO  FileSharingApp - {"level":"INFO","message":"[Browser Prompt] INFO: Web UI available at: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-15T18:58:25.844076300Z"}
+[2025-11-15 13:58:26] INFO  FileSharingApp - {"level":"SUCCESS","message":"🔎 Browser opened: http://localhost:8080/","transferId":"N/A","timestamp":"2025-11-15T18:58:26.559572900Z"}
